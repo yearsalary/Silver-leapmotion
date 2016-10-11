@@ -5,7 +5,7 @@ public class InitManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log ("도우미: "AssistantModel.name);
+		Debug.Log ("도우미:"+AssistantModel.name);
 
 		foreach (TraineeModel trainee in AssistantModel.traineeList) {
 			Debug.Log ("훈련자:"+ trainee.name);
