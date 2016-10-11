@@ -24,7 +24,7 @@ public class LoginManager : MonoBehaviour {
 		//로그인 성공
 
 		AssistantModel.id = id;
-		AssistantModel.name = "아무게";
+		AssistantModel.name = "아무개";
 		List<TraineeModel> traineeList= new List<TraineeModel> ();
 		traineeList.Add(new TraineeModel("김복순"));
 		traineeList.Add(new TraineeModel("이말자"));
