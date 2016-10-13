@@ -17,9 +17,9 @@ public class MainMenuSceneInitManager : MonoBehaviour {
 		content1.description = "01 DropBoxGame 01 DropBoxGame 01 DropBoxGame 01 DropBoxGame";
 
 		ContentModel content2= new ContentModel ();
-		content1.id = "02";
-		content1.name = "StackBoxGame";
-		content1.description = "02 StackBoxGame 02 StackBoxGame 02 StackBoxGame 02 StackBoxGame";
+		content2.id = "02";
+		content2.name = "StackBoxGame";
+		content2.description = "02 StackBoxGame 02 StackBoxGame 02 StackBoxGame 02 StackBoxGame";
 
 
 		//컨텐츠 정보 요청??
