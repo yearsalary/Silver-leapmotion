@@ -29,7 +29,7 @@ public class LoginManager : MonoBehaviour {
 		traineeList.Add(new TraineeModel("03","박순자"));
 
 		GameStatusModel.assistant = new AssistantModel (id, "아무개", traineeList);
-		SceneManager.LoadScene(1);
+		SceneManager.LoadScene("TraineeSelectScene");
 
 
 		//로그인 실패

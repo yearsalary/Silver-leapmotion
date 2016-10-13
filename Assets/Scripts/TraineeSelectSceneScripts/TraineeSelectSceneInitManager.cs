@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class InitManager : MonoBehaviour {
+public class TraineeSelectSceneInitManager : MonoBehaviour {
 
 	public Text systemMessage;
 	public Dropdown selectTraineeDropDown;
