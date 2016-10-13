@@ -23,13 +23,12 @@ public class LoginManager : MonoBehaviour {
 
 		//로그인 성공
 
-		AssistantModel.id = id;
-		AssistantModel.name = "아무개";
 		List<TraineeModel> traineeList= new List<TraineeModel> ();
-		traineeList.Add(new TraineeModel("김복순"));
-		traineeList.Add(new TraineeModel("이말자"));
-		traineeList.Add(new TraineeModel("박순자"));
-		AssistantModel.traineeList = traineeList;
+		traineeList.Add(new TraineeModel("01","김복순"));
+		traineeList.Add(new TraineeModel("02","이말자"));
+		traineeList.Add(new TraineeModel("03","박순자"));
+
+		GameStatusModel.assistant = new AssistantModel (id, "아무개", traineeList);
 		SceneManager.LoadScene(1);
 
 

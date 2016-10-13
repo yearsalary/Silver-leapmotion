@@ -2,8 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public static class AssistantModel {
-	public static string id;
-	public static string name;
-	public static List<TraineeModel> traineeList;
+public class AssistantModel {
+	public string id;
+	public string name;
+	public List<TraineeModel> traineeList;
+
+	public AssistantModel(string id, string name, List<TraineeModel> traineeList) {
+		this.id = id;
+		this.name = name;
+		this.traineeList = traineeList;
+	}
 }

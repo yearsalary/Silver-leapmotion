@@ -12,22 +12,17 @@ public class InitManager : MonoBehaviour {
 	void Start () {
 		List<string> options = new List<string> ();
 
-		Debug.Log ("도우미:"+AssistantModel.name);
-		foreach (TraineeModel trainee in AssistantModel.traineeList) {
+		foreach (TraineeModel trainee in GameStatusModel.assistant.traineeList) {
 			Debug.Log ("훈련자:" + trainee.name);
 			options.Add (trainee.name);
 		}
 
-		systemMessage.text = AssistantModel.name + " 도우미님 환영합니다.";
+		systemMessage.text = GameStatusModel.assistant.name + " 도우미님 환영합니다.";
 
 		selectTraineeDropDown.ClearOptions ();
 		selectTraineeDropDown.AddOptions (options);
 
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
