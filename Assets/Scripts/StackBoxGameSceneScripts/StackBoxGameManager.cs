@@ -10,6 +10,7 @@ public class StackBoxGameManager : MonoBehaviour {
 	public Text pointText;
 	public GameObject boxFactory;
 	public GameObject stackBox;
+	public GameObject stackBoxChecker;
 
 	private int level;
 	private float time;
@@ -20,7 +21,7 @@ public class StackBoxGameManager : MonoBehaviour {
 		level = 1;
 		time = 120f;
 		point = 0;
-		MakeBox (10);
+		MakeBox (5);
 	}
 	
 	// Update is called once per frame
@@ -37,7 +38,8 @@ public class StackBoxGameManager : MonoBehaviour {
 	void DrawGameInfo() {
 		levelText.text = "Level: "+level;
 		timeText.text = "Time: "+time;
-		pointText.text = "Point: "+point;
+		pointText.text = "Point: "+stackBoxChecker.GetComponent<StackBoxChecker>().maxHeight;
+
 	}
 
 	void MakeBox(int count) {
@@ -62,5 +64,6 @@ public class StackBoxGameManager : MonoBehaviour {
 			}
 		}
 	}
+		
 		
 }
