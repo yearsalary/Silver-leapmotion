@@ -4,25 +4,14 @@ using System.Collections;
 public class BoxManager : MonoBehaviour
 {
 
-    public GameObject controlObject;
-    private SetColor component;
-
-    // Use this for initialization
-    void Start()
+    void OnTriggerEnter(Collider other)
     {
-        controlObject = GameObject.Find("Cube");
-
+        
+        if (other.gameObject.tag == "CubeSet")
+        {
+            GetComponent<Renderer>().material.color = Color.blue;
+            Destroy(other.gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    void OnMouseDown()
-    {
-        component = controlObject.GetComponent<SetColor>();
-        component.SettingColor();
-    }
 }
