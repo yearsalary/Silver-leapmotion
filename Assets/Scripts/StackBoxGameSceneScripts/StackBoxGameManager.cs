@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Diagnostics;
 
-enum BoxColors {
-	
-}
-
 public class StackBoxGameManager : MonoBehaviour {
 	public Text levelText;
 	public Text timeText;
