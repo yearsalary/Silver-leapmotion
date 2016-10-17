@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CubeManager : MonoBehaviour {
-    Color boxColor;
+    public Color cubeColor;
     GameObject cube;
 
     public enum COLOR
@@ -17,13 +17,13 @@ public class CubeManager : MonoBehaviour {
         switch (colorNumber)
         {
             case 0 :
-                boxColor = Color.red;
+                cubeColor = Color.red;
                 break;
             case 1 :
-                boxColor = Color.blue;
+                cubeColor = Color.blue;
                 break;
             case 2 :
-                boxColor = Color.green;
+                cubeColor = Color.green;
                 break;
         }
 
@@ -31,7 +31,7 @@ public class CubeManager : MonoBehaviour {
 
         if (cube.tag == "CubeSet")
         {
-            GetComponent<Renderer>().material.color = boxColor;
+            GetComponent<Renderer>().material.color = cubeColor;
         }
         
     }
