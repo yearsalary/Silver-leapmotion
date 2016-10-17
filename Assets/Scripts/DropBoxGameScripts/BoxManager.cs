@@ -1,27 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BoxManager : MonoBehaviour
 {
-    Color boxColor = Color.blue;
-    CubeManager cm;
-
-    void Awake()
-    {
-        cm = GameObject.Find("Cube").GetComponent<CubeManager>();
-    }
 
     void OnTriggerEnter(Collider other)
     {
-        
         if (other.gameObject.tag == "CubeSet")
         {
-            if(cm.cubeColor == boxColor)
+            Debug.Log(other.GetComponentInParent<Renderer>().material.color);
+            if (other.GetComponentInParent<Renderer>().material.color == GetComponent<Renderer>().material.color)
             {
-                Debug.Log("111");
                 Destroy(other.gameObject);
             }
         }
+        
     }
 
 }

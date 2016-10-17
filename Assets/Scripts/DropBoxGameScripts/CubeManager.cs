@@ -19,7 +19,7 @@ public class CubeManager : MonoBehaviour {
             case 0 :
                 cubeColor = Color.red;
                 break;
-            case 1 :
+            case 1 :                                                                                                                                                                                                                                                                                                            
                 cubeColor = Color.blue;
                 break;
             case 2 :

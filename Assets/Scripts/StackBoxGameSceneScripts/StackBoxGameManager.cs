@@ -44,7 +44,6 @@ public class StackBoxGameManager : MonoBehaviour {
 
 	void MakeBox(int count) {
 		GameObject box;
-		Color boxColor;
 
 		for (int i = 0; i < count; i++) {
 			box = (GameObject)Instantiate (stackBox, boxFactory.transform.position, stackBox.transform.rotation);
