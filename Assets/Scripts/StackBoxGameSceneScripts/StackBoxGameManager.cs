@@ -10,6 +10,7 @@ public class StackBoxGameManager : MonoBehaviour {
 	public Text pointText;
 	public GameObject boxFactory;
 	public GameObject stackBox;
+	List<GameObject> stackBoxList;
 
 	private int level;
 	private float time;
@@ -20,14 +21,14 @@ public class StackBoxGameManager : MonoBehaviour {
 		level = 1;
 		time = 120f;
 		point = 0;
-		MakeBox (5);
+		MakeBox (3);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
 		CheckTime ();
 		DrawGameInfo ();
+		CheckStackCount ();
 	}
 
 	void CheckTime() {
@@ -37,14 +38,16 @@ public class StackBoxGameManager : MonoBehaviour {
 	void DrawGameInfo() {
 		levelText.text = "Level: "+level;
 		timeText.text = "Time: "+time;
-
 	}
 
 	void MakeBox(int count) {
 		GameObject box;
+		stackBoxList = new List<GameObject> ();
 
 		for (int i = 0; i < count; i++) {
 			box = (GameObject)Instantiate (stackBox, boxFactory.transform.position, stackBox.transform.rotation);
+			stackBoxList.Add(box);
+
 			switch (i % 4) {
 			case 0:
 				box.GetComponent<Renderer> ().material.color = Color.yellow;
@@ -59,7 +62,29 @@ public class StackBoxGameManager : MonoBehaviour {
 				box.GetComponent<Renderer> ().material.color = Color.blue;
 				break;
 			}
+
 		}
+	}
+
+	void CheckStackCount() {
+		int stackCount = 0;
+		int onGroundCount = 0;
+
+		foreach (GameObject box in stackBoxList) {
+			foreach (StackBoxChecker checker in box.GetComponentsInChildren<StackBoxChecker>()) {
+				if (checker.IsSwitchOn ())
+					stackCount++;
+
+				if (checker.IsOnGround ())
+					onGroundCount++;
+			}
+
+
+		}
+
+
+		//UnityEngine.Debug.Log ("stackCount: "+ stackCount);
+		UnityEngine.Debug.Log ("onGroundCount: "+ onGroundCount);
 	}
 		
 		
