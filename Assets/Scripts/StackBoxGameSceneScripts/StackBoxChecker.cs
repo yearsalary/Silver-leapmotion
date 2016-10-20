@@ -5,7 +5,7 @@ public class StackBoxChecker : MonoBehaviour {
 	
 	private bool isSwitchOn = false;
 
-	void OnTriggerEnter(Collider col) {
+	void OnTriggerStay(Collider col) {
 		if (col.tag == "Box")
 			isSwitchOn = true;
 	}

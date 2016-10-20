@@ -10,7 +10,9 @@ public class StackBoxGameManager : MonoBehaviour {
 	public Text pointText;
 	public GameObject boxFactory;
 	public GameObject stackBox;
+	public GameObject handController;
 	List<GameObject> stackBoxList;
+
 
 	private int level;
 	private float time;
@@ -21,14 +23,16 @@ public class StackBoxGameManager : MonoBehaviour {
 		level = 1;
 		time = 120f;
 		point = 0;
-		MakeBox (4);
+		MakeBox (5);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		CheckTime ();
 		DrawGameInfo ();
-		CheckStackCount ();
+
+		if(handController.GetComponent<HandController>().GetAllGraphicsHands().Length == 0 )
+			CheckStackCount ();
 	}
 
 	void CheckTime() {
@@ -73,12 +77,14 @@ public class StackBoxGameManager : MonoBehaviour {
 			foreach (StackBoxChecker checker in box.GetComponentsInChildren<StackBoxChecker>()) {
 				if (checker.IsSwitchOn ())
 					stackCount++;
-				UnityEngine.Debug.Log (checker.GetInstanceID () + ": " + checker.IsSwitchOn ());
+				//UnityEngine.Debug.Log (checker.GetInstanceID () + ": " + checker.IsSwitchOn ());
 
 			}
 		}
 			
-		UnityEngine.Debug.Log ("stackCount: "+ stackCount);
+		if (stackCount == (stackBoxList.Count - 1) * 2)
+			UnityEngine.Debug.Log ("aaaaaaaaaa");
+	
 	}
 		
 		

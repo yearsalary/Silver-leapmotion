@@ -335,5 +335,8 @@ public class GrabbingHand : MonoBehaviour {
     }
     pinch_state_ = new_pinch_state;
   }
-		
+
+	public PinchState GetPinchState() {
+		return pinch_state_;
+	}
 }
