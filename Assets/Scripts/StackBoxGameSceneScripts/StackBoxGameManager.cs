@@ -25,7 +25,7 @@ public class StackBoxGameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		level = 1;
-		dialogueMessage.text = "시작";
+		dialogueMessage.text = "시작\n *스택박스게임은 탑을 쌓고 손을 모두 치워야 결과를 확인합니다.";
 		dialogueCanvas.enabled = true;
 		gamePlayUI.enabled = false;
 		isStopGame = true;
