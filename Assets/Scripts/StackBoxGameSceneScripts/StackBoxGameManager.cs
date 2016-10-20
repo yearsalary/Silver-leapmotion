@@ -21,7 +21,7 @@ public class StackBoxGameManager : MonoBehaviour {
 		level = 1;
 		time = 120f;
 		point = 0;
-		MakeBox (3);
+		MakeBox (4);
 	}
 	
 	// Update is called once per frame
@@ -68,23 +68,17 @@ public class StackBoxGameManager : MonoBehaviour {
 
 	void CheckStackCount() {
 		int stackCount = 0;
-		int onGroundCount = 0;
 
 		foreach (GameObject box in stackBoxList) {
 			foreach (StackBoxChecker checker in box.GetComponentsInChildren<StackBoxChecker>()) {
 				if (checker.IsSwitchOn ())
 					stackCount++;
+				UnityEngine.Debug.Log (checker.GetInstanceID () + ": " + checker.IsSwitchOn ());
 
-				if (checker.IsOnGround ())
-					onGroundCount++;
 			}
-
-
 		}
-
-
-		//UnityEngine.Debug.Log ("stackCount: "+ stackCount);
-		UnityEngine.Debug.Log ("onGroundCount: "+ onGroundCount);
+			
+		UnityEngine.Debug.Log ("stackCount: "+ stackCount);
 	}
 		
 		
