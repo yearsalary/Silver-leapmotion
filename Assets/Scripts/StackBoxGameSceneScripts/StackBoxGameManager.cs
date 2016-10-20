@@ -12,18 +12,19 @@ public class StackBoxGameManager : MonoBehaviour {
 	public GameObject stackBox;
 	public GameObject handController;
 	List<GameObject> stackBoxList;
-
+	public Canvas dialogueCanvas;
+	public Text dialogueMessage;
 
 	private int level;
 	private float time;
 	private int point;
+	private bool isStopGame;
 
 	// Use this for initialization
 	void Start () {
 		level = 1;
-		time = 120f;
-		point = 0;
-		MakeBox (5);
+		InitGame ();
+		dialogueCanvas.enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -36,12 +37,18 @@ public class StackBoxGameManager : MonoBehaviour {
 	}
 
 	void CheckTime() {
+		if (isStopGame)
+			return;
 		time -= Time.deltaTime;
+		if (time <= 0) {
+			time = 0;
+			FinishGame (false);
+		}
 	}
 
 	void DrawGameInfo() {
-		levelText.text = "Level: "+level;
-		timeText.text = "Time: "+time;
+		
+		timeText.text = "Time: "+(int)time;
 	}
 
 	void MakeBox(int count) {
@@ -78,14 +85,47 @@ public class StackBoxGameManager : MonoBehaviour {
 				if (checker.IsSwitchOn ())
 					stackCount++;
 				//UnityEngine.Debug.Log (checker.GetInstanceID () + ": " + checker.IsSwitchOn ());
-
 			}
 		}
 			
-		if (stackCount == (stackBoxList.Count - 1) * 2)
-			UnityEngine.Debug.Log ("aaaaaaaaaa");
-	
+		if (stackCount == (stackBoxList.Count - 1) * 2 && time <=119f)
+			FinishGame (true);
 	}
-		
-		
+
+	void InitGame() {
+		time = 120f;
+		MakeBox (level + 1);
+		levelText.text = "Level: "+level;
+		isStopGame = false;
+	}
+
+	void FinishGame(bool isSucceed) {
+		isStopGame = true;
+
+		foreach (GameObject box in stackBoxList)
+			Destroy (box);
+		stackBoxList.Clear ();
+
+		dialogueMessage.text = "";
+		if (isSucceed) {
+			dialogueMessage.text += level + "레벨을 성공하였습니다.\n 다음 레벨을 플레이 해보세요.";
+			level++;
+		} else {
+			dialogueMessage.text += level + "레벨을 실패하였습니다.\n 다시 플레이 해보세요.";
+		}
+		dialogueCanvas.enabled = true;
+			
+	}
+
+	public void OnPlayButton() {
+		dialogueCanvas.enabled = false;
+		InitGame ();
+	}
+
+	public void OnPlayEndButton() {
+
+	}
+
+
+				
 }
