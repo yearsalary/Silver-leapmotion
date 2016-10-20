@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Diagnostics;
+using UnityEngine.SceneManagement;
 
 public class StackBoxGameManager : MonoBehaviour {
 	public Text levelText;
@@ -13,6 +14,7 @@ public class StackBoxGameManager : MonoBehaviour {
 	public GameObject handController;
 	List<GameObject> stackBoxList;
 	public Canvas dialogueCanvas;
+	public Canvas gamePlayUI;
 	public Text dialogueMessage;
 
 	private int level;
@@ -23,12 +25,17 @@ public class StackBoxGameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		level = 1;
-		InitGame ();
-		dialogueCanvas.enabled = false;
+		dialogueMessage.text = "시작";
+		dialogueCanvas.enabled = true;
+		gamePlayUI.enabled = false;
+		isStopGame = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (isStopGame)
+			return;
+
 		CheckTime ();
 		DrawGameInfo ();
 
@@ -37,8 +44,6 @@ public class StackBoxGameManager : MonoBehaviour {
 	}
 
 	void CheckTime() {
-		if (isStopGame)
-			return;
 		time -= Time.deltaTime;
 		if (time <= 0) {
 			time = 0;
@@ -47,7 +52,6 @@ public class StackBoxGameManager : MonoBehaviour {
 	}
 
 	void DrawGameInfo() {
-		
 		timeText.text = "Time: "+(int)time;
 	}
 
@@ -114,16 +118,23 @@ public class StackBoxGameManager : MonoBehaviour {
 			dialogueMessage.text += level + "레벨을 실패하였습니다.\n 다시 플레이 해보세요.";
 		}
 		dialogueCanvas.enabled = true;
-			
+		gamePlayUI.enabled = false;
 	}
 
 	public void OnPlayButton() {
 		dialogueCanvas.enabled = false;
+		gamePlayUI.enabled = true;
 		InitGame ();
 	}
 
 	public void OnPlayEndButton() {
+		//게임 기록 데이터 정리 및 전송..
 
+		SceneManager.LoadScene("MainMenuScene");
+	}
+
+	public void OnGameStopButton() {
+		FinishGame (false);
 	}
 
 
