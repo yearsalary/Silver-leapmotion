@@ -13,7 +13,7 @@ public class TouchBallGameManager : MonoBehaviour {
 
 	public GameObject hitBall;
 	public GameObject handController;
-	public GameObject ballFactory;
+	public List<GameObject> ballFactoryList;
 
 	public Canvas dialogueCanvas;
 	public Canvas gamePlayUI;
@@ -58,13 +58,20 @@ public class TouchBallGameManager : MonoBehaviour {
 	}
 
 	void MakeBall(int count) {
-		GameObject ball = (GameObject)Instantiate (hitBall, ballFactory.transform.position, hitBall.transform.rotation);
+		GameObject[] ballFactorys = ballFactoryList.ToArray ();
+		for (int i = 0; i < count; i++) {
+			int randNum = Random.Range (1, 3);
+
+			GameObject ball = (GameObject)Instantiate (hitBall, ballFactorys[randNum].transform.position, hitBall.transform.rotation);
+
+		}
+
+
+
 	}
 
-	void ChecHitBallCount() {
-		int hitBallCount = 0;
-
-
+	void CheckHitBallCount() {
+		
 	}
 
 	void InitGame() {
