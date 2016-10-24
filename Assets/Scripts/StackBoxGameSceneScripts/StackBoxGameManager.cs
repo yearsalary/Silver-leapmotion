@@ -135,8 +135,5 @@ public class StackBoxGameManager : MonoBehaviour {
 
 	public void OnGameStopButton() {
 		FinishGame (false);
-	}
-
-
-				
+	}	
 }

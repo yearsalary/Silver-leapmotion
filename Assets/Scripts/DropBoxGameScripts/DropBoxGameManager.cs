@@ -1,45 +1,158 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using System.Diagnostics;
+using UnityEngine.UI;
 
 public class DropBoxGameManager : MonoBehaviour
 {
     public GameObject cubeFactory;
     public GameObject cube;
 
+    public int cubeCount;
+    public int point;
+    public int totalPoint;
+    public bool isStopGame;
+    public float time;
+
+    public Canvas dialogueCanvas;
+    public Canvas gamePlayUI;
+
+    public Text levelText;
+    public Text timeText;
+    public Text pointText;
+    public Text dialogueMessage;
+    public List<GameObject> dropBoxList;
+
     // Use this for initialization
     void Start()
     {
-        MakeBox(6);
+        cubeCount = 1;
+        dialogueMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
+        dialogueCanvas.enabled = true;
+        gamePlayUI.enabled = false;
+        isStopGame = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isStopGame)
+            return;
 
+        CheckTime();
+        DrawGameInfo();
+        CheckCubeCount();
     }
 
-    void MakeBox(int count)
+    void InitGame()
+    {
+        point = 0;
+        dropBoxList = new List<GameObject>();
+        time = 120f;
+        MakeCube(cubeCount + 1);
+        levelText.text = "Level: " + cubeCount;
+        pointText.text = "Point : " + point;
+        isStopGame = false;
+    }
+
+    void CheckTime()
+    {
+        time -= Time.deltaTime;
+        if (time <= 0)
+        {
+            time = 0;
+            FinishGame(false);
+        }
+    }
+
+    void DrawGameInfo()
+    {
+        timeText.text = "Time : " + (int)time;
+    }
+
+    void CheckCubeCount()
+    {
+        for (int i = 0; i < dropBoxList.Count; i++)
+        {
+            if (dropBoxList[i] == null)
+            {
+                dropBoxList.RemoveAt(i);
+                point += 10;
+                totalPoint += point;
+                pointText.text = "Point : "+point;
+            }
+        }
+
+        if(dropBoxList.Count == 0)
+        {
+            FinishGame(true);
+        }
+        
+    }
+
+    void FinishGame(bool isSucceed)
+    {
+        isStopGame = true;
+
+        foreach (GameObject cube in dropBoxList)
+            Destroy(cube);
+        dropBoxList.Clear();
+
+        dialogueMessage.text = "";
+        if (isSucceed)
+        {
+            dialogueMessage.text += cubeCount + "레벨을 성공하였습니다.\n 다음 레벨을 플레이 해보세요.";
+            cubeCount++;
+            //MakeCube(cubeCount);
+        }
+        else
+        {
+            dialogueMessage.text += cubeCount + "레벨을 실패하였습니다.\n 다시 플레이 해보세요.";
+        }
+        dialogueCanvas.enabled = true;
+        gamePlayUI.enabled = false;
+    }
+
+    void MakeCube(int count)
     {
         for (int i = 0; i < count; i++)
         {
-            cube = (GameObject)Instantiate(cube, cubeFactory.transform.position, cube.transform.rotation);
+            GameObject cubeClone = (GameObject)Instantiate(cube, cubeFactory.transform.position, cube.transform.rotation);
+            dropBoxList.Add(cubeClone);
 
             switch (i % 4)
             {
                 case 0 :
-                    cube.GetComponent<Renderer>().material.color = Color.yellow;
+                    cubeClone.GetComponent<Renderer>().material.color = Color.yellow;
                     break;
                 case 1 :
-                    cube.GetComponent<Renderer>().material.color = Color.red;
+                    cubeClone.GetComponent<Renderer>().material.color = Color.red;
                     break;
                 case 2 :
-                    cube.GetComponent<Renderer>().material.color = Color.green;
+                    cubeClone.GetComponent<Renderer>().material.color = Color.green;
                     break;
                 case 3:
-                    cube.GetComponent<Renderer>().material.color = Color.blue;
+                    cubeClone.GetComponent<Renderer>().material.color = Color.blue;
                     break;
             }
                 
         }
     }
+
+    public void OnPlayButton()
+    {
+        dialogueCanvas.enabled = false;
+        gamePlayUI.enabled = true;
+        InitGame();
+    }
+
+    public void OnPlayEndButton()
+    {
+        //게임 기록 데이터 정리 및 전송..
+
+        SceneManager.LoadScene("MainMenuScene");
+    }
+
 }
