@@ -23,6 +23,8 @@ public class TouchBallGameManager : MonoBehaviour {
 	private float time;
 	private int point;
 	private bool isStopGame;
+	private float ballCreateDelayTime = 1f;
+
 
 	void Start() {
 		level = 1;
@@ -57,13 +59,13 @@ public class TouchBallGameManager : MonoBehaviour {
 		timeText.text = "Time: "+(int)time;
 	}
 
-	void MakeBall(int count) {
+	IEnumerator MakeBall(int count) {
 		GameObject[] ballFactorys = ballFactoryList.ToArray ();
+
 		for (int i = 0; i < count; i++) {
 			int randNum = Random.Range (1, 3);
-
 			GameObject ball = (GameObject)Instantiate (hitBall, ballFactorys[randNum].transform.position, hitBall.transform.rotation);
-
+			yield return new WaitForSeconds (1f);
 		}
 
 
@@ -76,6 +78,7 @@ public class TouchBallGameManager : MonoBehaviour {
 
 	void InitGame() {
 		time = 120f;
+		StartCoroutine (MakeBall(3));
 		MakeBall (level + 1);
 		levelText.text = "Level: "+level;
 		isStopGame = false;
@@ -116,7 +119,6 @@ public class TouchBallGameManager : MonoBehaviour {
 	}
 
 	public void OnGameStopButton() {
-		UnityEngine.Debug.Log ("aaaaaaaa");
 		FinishGame (false);
 	}
 
