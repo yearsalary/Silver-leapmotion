@@ -15,6 +15,7 @@ public class HitBall : MonoBehaviour {
 		UnityEngine.Debug.Log (this.gameObject.GetComponent<Renderer> ().material.color);
 
 		Destroy (this.gameObject);
+
 	}
 		
 }
