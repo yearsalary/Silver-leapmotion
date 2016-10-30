@@ -21,7 +21,7 @@ public class PlayerBar : MonoBehaviour {
 		GameObject palm = getChildGameObject (hand, "palm");
 		if (palm != null) {
 			gameObject.transform.position = new Vector3(palm.transform.position.x, gameObject.transform.position.y, palm.transform.position.z);
-			Debug.Log (gameObject.transform.position.ToString());
+			//Debug.Log (gameObject.transform.position.ToString());
 			//Debug.Log (palm.transform.position.ToString());
 		}
 			

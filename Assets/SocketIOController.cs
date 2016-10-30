@@ -50,18 +50,15 @@ public class SocketIOController : MonoBehaviour {
 	}
 
 	private void OnUSerMove(SocketIOEvent evt) {
-
-		Debug.Log ("move!!!!:" + evt.data.GetField("name"));
-
-		if (name != evt.data.GetField ("name").ToString()) {
-			//Debug.l
-			opponentBar.transform.position = JsonToVector3 (evt.data.GetField ("position").ToString());
-		}
+		if (name != evt.data.GetField ("name").str)
+			opponentBar.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
+		
 	}
 
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;
 		string[] newString = Regex.Split (target, ",");
+
 		newVector = new Vector3 (float.Parse (newString [0]), float.Parse (newString [1]), float.Parse (newString [2]));
 
 		return newVector;
