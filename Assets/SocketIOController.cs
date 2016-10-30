@@ -8,6 +8,8 @@ public class SocketIOController : MonoBehaviour {
 
 	public SocketIOComponent socket;
 	public GameObject playerBar;
+	public GameObject opponentBar;
+	string name = "A";
 
 	// Use this for initialization
 	void Start () {
@@ -23,7 +25,7 @@ public class SocketIOController : MonoBehaviour {
 		yield return new WaitForSeconds (1f);
 
 		Dictionary<string, string> data = new Dictionary<string, string> ();
-		data ["name"] = "tester1";
+		data ["name"] = name;
 		Vector3 position = new Vector3 (0, 0, 0);
 		data ["position"] = position.x + "," + position.y + "," + position.z;
 		socket.Emit ("PLAY", new JSONObject (data));
@@ -32,10 +34,9 @@ public class SocketIOController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Transform transform = playerBar.GetComponent<Transform> ();
-		Debug.Log (transform.position);
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
-		data["name"] = "tester1";
+		data["name"] = name;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
 		socket.Emit ("MOVE", new JSONObject(data));
 	}
@@ -49,7 +50,13 @@ public class SocketIOController : MonoBehaviour {
 	}
 
 	private void OnUSerMove(SocketIOEvent evt) {
-		Debug.Log ("move !!");
+
+		Debug.Log ("move!!!!:" + evt.data.GetField("name"));
+
+		if (name != evt.data.GetField ("name").ToString()) {
+			//Debug.l
+			opponentBar.transform.position = JsonToVector3 (evt.data.GetField ("position").ToString());
+		}
 	}
 
 	Vector3 JsonToVector3(string target) {

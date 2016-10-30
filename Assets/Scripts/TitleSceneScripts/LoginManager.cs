@@ -28,7 +28,7 @@ public class LoginManager : MonoBehaviour {
 		traineeList.Add(new TraineeModel("02","이말자"));
 		traineeList.Add(new TraineeModel("03","박순자"));
 
-		GameStatusModel.assistant = new AssistantModel (id, "아무개", traineeList);
+		GameStatusModel.assistant = new AssistantModel (id, id, traineeList);
 		SceneManager.LoadScene("TraineeSelectScene");
 
 
