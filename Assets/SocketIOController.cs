@@ -7,12 +7,14 @@ using SocketIO;
 public class SocketIOController : MonoBehaviour {
 
 	public SocketIOComponent socket;
+	public GameObject playerBar;
 
 	// Use this for initialization
 	void Start () {
 		StartCoroutine (ConnectToServer ());
 		socket.On ("USER_CONNECTED", OnUserConnected);
 		socket.On ("PLAY", OnUserPlay);
+		socket.On ("MOVE", OnUSerMove);
 	}
 
 	IEnumerator ConnectToServer() {
@@ -29,7 +31,13 @@ public class SocketIOController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Transform transform = playerBar.GetComponent<Transform> ();
+		Debug.Log (transform.position);
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data["name"] = "tester1";
+		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
+		socket.Emit ("MOVE", new JSONObject(data));
 	}
 	
 	private void OnUserConnected(SocketIOEvent evt) {
@@ -38,6 +46,10 @@ public class SocketIOController : MonoBehaviour {
 
 	private void OnUserPlay(SocketIOEvent evt) {
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlay ");
+	}
+
+	private void OnUSerMove(SocketIOEvent evt) {
+		Debug.Log ("move !!");
 	}
 
 	Vector3 JsonToVector3(string target) {
