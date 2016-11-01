@@ -155,4 +155,8 @@ public class DropBoxGameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenuScene");
     }
 
+    public void OnGameStopButton()
+    {
+        FinishGame(false);
+    }
 }
