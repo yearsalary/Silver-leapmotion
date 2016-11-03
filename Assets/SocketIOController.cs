@@ -64,7 +64,8 @@ public class SocketIOController : MonoBehaviour {
 	}
 		
 	private void OnBallMove(SocketIOEvent evt) {
-		Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
+		//Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
+		ball.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
 	}
 
 
