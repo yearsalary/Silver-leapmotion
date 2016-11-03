@@ -10,8 +10,9 @@ public class SocketIOController : MonoBehaviour {
 	public GameObject playerBar;
 	public GameObject opponentBar;
 	public GameObject ball;
+	private string ballOwner = "";
 	string name = "A";
-	string ballOwner = "";
+
 
 	// Use this for initialization
 	void Start () {
@@ -64,7 +65,7 @@ public class SocketIOController : MonoBehaviour {
 	}
 		
 	private void OnBallMove(SocketIOEvent evt) {
-		//Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
+		Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
 		ball.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
 	}
 
@@ -105,6 +106,10 @@ public class SocketIOController : MonoBehaviour {
 		newVector = new Vector3 (float.Parse (newString [0]), float.Parse (newString [1]), float.Parse (newString [2]));
 
 		return newVector;
+	}
+
+	public string GetBallOwner() {
+		return this.ballOwner;
 	}
 
 }
