@@ -9,7 +9,7 @@ public class SocketIOController : MonoBehaviour {
 	public SocketIOComponent socket;
 	public GameObject playerBar;
 	public GameObject opponentBar;
-	string name = "B";
+	string name = "A";
 
 	// Use this for initialization
 	void Start () {
