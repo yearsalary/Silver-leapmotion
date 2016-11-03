@@ -9,7 +9,9 @@ public class SocketIOController : MonoBehaviour {
 	public SocketIOComponent socket;
 	public GameObject playerBar;
 	public GameObject opponentBar;
+	public GameObject ball;
 	string name = "A";
+	string ballOwner = "";
 
 	// Use this for initialization
 	void Start () {
@@ -17,6 +19,8 @@ public class SocketIOController : MonoBehaviour {
 		socket.On ("USER_CONNECTED", OnUserConnected);
 		socket.On ("PLAY", OnUserPlay);
 		socket.On ("MOVE", OnUSerMove);
+		socket.On ("BALL_COLLISON", OnBallCollison);
+		socket.On ("BALL_MOVE", OnBallMove);
 	}
 
 	IEnumerator ConnectToServer() {
@@ -30,15 +34,14 @@ public class SocketIOController : MonoBehaviour {
 		data ["position"] = position.x + "," + position.y + "," + position.z;
 		socket.Emit ("PLAY", new JSONObject (data));
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		Transform transform = playerBar.GetComponent<Transform> ();
-		Dictionary<string, string> data = new Dictionary<string, string> ();
+		SendBarMoveMSg();
+		if (ballOwner.Equals (name))
+			SendBallMoveMSg ();
 
-		data["name"] = name;
-		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
-		socket.Emit ("MOVE", new JSONObject(data));
+
 	}
 	
 	private void OnUserConnected(SocketIOEvent evt) {
@@ -54,6 +57,45 @@ public class SocketIOController : MonoBehaviour {
 			opponentBar.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
 		
 	}
+		
+	private void OnBallCollison(SocketIOEvent evt) {
+		Debug.Log ("ballOWner: "+evt.data.GetField ("name").str);
+		ballOwner = evt.data.GetField ("name").str;
+	}
+		
+	private void OnBallMove(SocketIOEvent evt) {
+		Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
+	}
+
+
+
+
+	public void SendBarMoveMSg() {
+		Transform transform = playerBar.GetComponent<Transform> ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data["name"] = name;
+		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
+		socket.Emit ("MOVE", new JSONObject(data));
+	}
+
+	public void SendBallCollisonMsg(){
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+		data["name"] = name;
+		socket.Emit ("BALL_COLLISON", new JSONObject (data));
+	}
+
+	public void SendBallMoveMSg() {
+		Transform transform = ball.GetComponent<Transform> ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data["name"] = name;
+		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
+		socket.Emit ("BALL_MOVE", new JSONObject(data));
+	}
+
+
+
 
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;

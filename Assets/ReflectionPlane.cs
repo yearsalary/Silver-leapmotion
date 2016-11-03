@@ -9,9 +9,9 @@ public class ReflectionPlane : MonoBehaviour {
 		isFirstColEnter = true;
 	}
 
-	void OnCollisionEnter(Collision col) 
+	void OnCollisionStay(Collision col) 
 	{ 
-		Debug.Log ("Enter");
+		//Debug.Log ("Stay");
 		if (col.gameObject.Equals (ball) && isFirstColEnter) {
 			Vector3 reflectedVector = Vector3.Reflect (ball.GetComponent<TableHockeyBall>().getMoveDirection(),col.contacts [0].normal.normalized);
 			Debug.Log (reflectedVector.ToString ());
@@ -22,7 +22,7 @@ public class ReflectionPlane : MonoBehaviour {
 	}
 		
 	void OnCollisionExit(Collision col) {
-		Debug.Log ("exit");
+		//Debug.Log ("exit");
 		isFirstColEnter = true;
 	}
 }

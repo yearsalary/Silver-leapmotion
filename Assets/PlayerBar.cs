@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerBar : MonoBehaviour {
 	public GameObject handController;
 	public GameObject ball;
+	public GameObject netWorkCtrl;
 	// Use this for initialization
 	void Start () {
 	
@@ -37,10 +38,10 @@ public class PlayerBar : MonoBehaviour {
 		
 	void OnCollisionEnter(Collision col) 
 	{ 
-		//Vector3 pos = collision.contacts[0].point; 
 		if (col.gameObject.Equals (ball)) {
-			Vector3 reflectedVector = Vector3.Reflect (col.contacts [0].point, col.contacts [0].normal);
-			Debug.Log (reflectedVector.ToString ());
+			netWorkCtrl.GetComponent<SocketIOController> ().SendBallCollisonMsg ();
+			Vector3 reflectedVector = Vector3.Reflect (col.contacts [0].point, col.contacts [0].normal.normalized);
+			//Debug.Log (reflectedVector.ToString ());
 			reflectedVector.Set (reflectedVector.x,0f,reflectedVector.z);
 			ball.GetComponent<TableHockeyBall> ().SetMoveDirection (reflectedVector);
 		}
