@@ -4,10 +4,14 @@ using System.Collections;
 public class TableHockeyBall : MonoBehaviour {
 	public GameObject netWorkCtrl;
 	private Vector3 moveDirection;
-	private float speed = 2f;
+	private float speed = 1.5f;
+
+	void Start() {
+		this.moveDirection = new Vector3 (0, 0, 0);
+	}
 
 	void Update () {
-		if(moveDirection!=null && netWorkCtrl.GetComponent<SocketIOController>().isBallOwner())
+		if(moveDirection!=Vector3.zero && netWorkCtrl.GetComponent<SocketIOController>().isBallOwner())
 			transform.Translate (moveDirection * speed* Time.deltaTime);
 	}
 

@@ -5,14 +5,19 @@ public class PlayerBar : MonoBehaviour {
 	public GameObject handController;
 	public GameObject ball;
 	public GameObject netWorkCtrl;
+	bool isFirstColEnter;
+	private float timeLeft = 1f;
+	private float nextTime = 0f;
+
+
 	// Use this for initialization
 	void Start () {
-	
+		isFirstColEnter = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		ChaseHand ();
+		ChaseHand ();			
 	}
 
 	void ChaseHand() {
@@ -38,12 +43,23 @@ public class PlayerBar : MonoBehaviour {
 		
 	void OnCollisionEnter(Collision col) 
 	{ 
-		if (col.gameObject.Equals (ball)) {
+		Vector3 reflectedVector;
+
+		if (col.gameObject.Equals (ball) && isFirstColEnter) {
 			netWorkCtrl.GetComponent<SocketIOController> ().SendBallCollisonMsg ();
-			Vector3 reflectedVector = Vector3.Reflect (col.contacts [0].point, col.contacts [0].normal.normalized);
-			//Debug.Log (reflectedVector.ToString ());
+			if(ball.GetComponent<TableHockeyBall>().getMoveDirection() == Vector3.zero)
+				reflectedVector = Vector3.Reflect (col.contacts [0].point, col.contacts [0].normal.normalized);
+			else
+				reflectedVector = Vector3.Reflect (ball.GetComponent<TableHockeyBall>().getMoveDirection(),col.contacts [0].normal.normalized);
 			reflectedVector.Set (reflectedVector.x,0f,reflectedVector.z);
 			ball.GetComponent<TableHockeyBall> ().SetMoveDirection (reflectedVector);
+			Debug.Log (col.contacts [0].normal.normalized);
 		}
 	}
+
+	void OnCollisionExit(Collision col) {
+		//Debug.Log ("exit");
+		isFirstColEnter = true;
+	}
+
 }
