@@ -7,7 +7,7 @@ public class TableHockeyBall : MonoBehaviour {
 	private float speed = 2f;
 
 	void Update () {
-		if(moveDirection!=null && netWorkCtrl.GetComponent<SocketIOController>().GetBallOwner().Equals(netWorkCtrl.name))
+		if(moveDirection!=null && netWorkCtrl.GetComponent<SocketIOController>().isBallOwner())
 			transform.Translate (moveDirection * speed* Time.deltaTime);
 	}
 

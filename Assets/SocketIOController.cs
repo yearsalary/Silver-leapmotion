@@ -108,8 +108,8 @@ public class SocketIOController : MonoBehaviour {
 		return newVector;
 	}
 
-	public string GetBallOwner() {
-		return this.ballOwner;
+	public bool isBallOwner() {
+		return this.ballOwner.Equals(name);
 	}
 
 }
