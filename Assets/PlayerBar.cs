@@ -5,19 +5,19 @@ public class PlayerBar : MonoBehaviour {
 	public GameObject handController;
 	public GameObject ball;
 	public GameObject netWorkCtrl;
-	bool isFirstColEnter;
-	private float timeLeft = 1f;
-	private float nextTime = 0f;
+	//bool isFirstColEnter;
 
-
+	/*
 	// Use this for initialization
 	void Start () {
 		isFirstColEnter = true;
 	}
+	*/
 	
 	// Update is called once per frame
 	void Update () {
-		ChaseHand ();			
+		ChaseHand ();
+
 	}
 
 	void ChaseHand() {
@@ -57,9 +57,5 @@ public class PlayerBar : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionExit(Collision col) {
-		//Debug.Log ("exit");
-		isFirstColEnter = true;
-	}
 
 }
