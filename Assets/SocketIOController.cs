@@ -69,6 +69,7 @@ public class SocketIOController : MonoBehaviour {
 		
 	private void OnBallMove(SocketIOEvent evt) {
 		Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
+		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (JsonToVector3(evt.data.GetField ("moveDirection").str));
 		ball.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
 	}
 
@@ -81,6 +82,7 @@ public class SocketIOController : MonoBehaviour {
 
 		data["name"] = name;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
+
 		socket.Emit ("MOVE", new JSONObject(data));
 	}
 
@@ -95,8 +97,8 @@ public class SocketIOController : MonoBehaviour {
 	public void SendBallMoveMSg() {
 		Transform transform = ball.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
-	
-		data["name"] = name;
+		Vector3 ballMoveDirection = ball.GetComponent<TableHockeyBall> ().getMoveDirection ();
+		data["moveDirection"] = ballMoveDirection.x + "," + ballMoveDirection.y + "," + ballMoveDirection.z;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
 		socket.Emit ("BALL_MOVE", new JSONObject(data));
 	}
