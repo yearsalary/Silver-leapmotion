@@ -70,7 +70,7 @@ public class SocketIOController : MonoBehaviour {
 	private void OnBallMove(SocketIOEvent evt) {
 		Debug.Log (evt.data.GetField ("moveDirection").str);
 		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (JsonToVector3(evt.data.GetField ("moveDirection").str));
-		ball.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
+		ball.transform.position  = - JsonToVector3 (evt.data.GetField ("position").str);
 	}
 
 
