@@ -91,6 +91,8 @@ public class SocketIOController : MonoBehaviour {
 		Transform transform = ball.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
+		this.ballOwner = name;// BallOwner 자신으로 수정..
+
 		data["name"] = name;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
 		socket.Emit ("BALL_MOVE", new JSONObject(data));
@@ -110,6 +112,10 @@ public class SocketIOController : MonoBehaviour {
 
 	public bool isBallOwner() {
 		return this.ballOwner.Equals(name);
+	}
+
+	public void SetBallOwnerByMe() {
+		this.ballOwner = name;
 	}
 
 }
