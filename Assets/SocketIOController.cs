@@ -42,8 +42,8 @@ public class SocketIOController : MonoBehaviour {
 		if (ballOwner.Equals (name))
 			SendBallMoveMSg ();
 
-		if (Vector3.Distance (playerBar.transform.position, ball.transform.position) >
-		   Vector3.Distance (opponentBar.transform.position, ball.transform.position))
+		if ((Vector3.Distance (playerBar.transform.position, ball.transform.position) <
+			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !isBallOwner())
 			SendBallOwnerChangeMsg ();
 
 	}
@@ -68,7 +68,7 @@ public class SocketIOController : MonoBehaviour {
 	}
 		
 	private void OnBallMove(SocketIOEvent evt) {
-		Debug.Log ("ballMove: "+evt.data.GetField ("name").str);
+		Debug.Log (evt.data.GetField ("moveDirection").str);
 		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (JsonToVector3(evt.data.GetField ("moveDirection").str));
 		ball.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
 	}
