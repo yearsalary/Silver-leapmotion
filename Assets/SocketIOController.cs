@@ -83,6 +83,8 @@ public class SocketIOController : MonoBehaviour {
 
 	public void SendBallCollisonMsg(){
 		Dictionary<string, string> data = new Dictionary<string, string> ();
+		this.ballOwner = name;// BallOwner 자신으로 수정..
+
 		data["name"] = name;
 		socket.Emit ("BALL_COLLISON", new JSONObject (data));
 	}
@@ -90,9 +92,7 @@ public class SocketIOController : MonoBehaviour {
 	public void SendBallMoveMSg() {
 		Transform transform = ball.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
-
-		this.ballOwner = name;// BallOwner 자신으로 수정..
-
+	
 		data["name"] = name;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
 		socket.Emit ("BALL_MOVE", new JSONObject(data));
