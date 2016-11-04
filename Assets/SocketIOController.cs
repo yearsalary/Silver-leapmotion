@@ -57,8 +57,8 @@ public class SocketIOController : MonoBehaviour {
 	}
 
 	private void OnUSerMove(SocketIOEvent evt) {
-		if (name != evt.data.GetField ("name").str)
-			opponentBar.transform.position  = JsonToVector3 (evt.data.GetField ("position").str);
+		if (name != evt.data.GetField ("name").str) 
+			opponentBar.transform.position  = -JsonToVector3 (evt.data.GetField ("position").str);
 		
 	}
 		
