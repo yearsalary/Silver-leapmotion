@@ -5,10 +5,6 @@ public class ReflectionPlane : MonoBehaviour {
 	public GameObject ball;
 	bool isFirstColEnter;
 
-	void Start() {
-		isFirstColEnter = true;
-	}
-
 	void OnCollisionStay(Collision col) 
 	{ 
 		//Debug.Log ("Stay");

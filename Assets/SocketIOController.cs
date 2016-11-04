@@ -20,7 +20,7 @@ public class SocketIOController : MonoBehaviour {
 		socket.On ("USER_CONNECTED", OnUserConnected);
 		socket.On ("PLAY", OnUserPlay);
 		socket.On ("MOVE", OnUSerMove);
-		socket.On ("BALL_COLLISON", OnBallCollison);
+		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
 		socket.On ("BALL_MOVE", OnBallMove);
 	}
 
@@ -42,6 +42,9 @@ public class SocketIOController : MonoBehaviour {
 		if (ballOwner.Equals (name))
 			SendBallMoveMSg ();
 
+		if (Vector3.Distance (playerBar.transform.position, ball.transform.position) >
+		   Vector3.Distance (opponentBar.transform.position, ball.transform.position))
+			SendBallOwnerChangeMsg ();
 
 	}
 	
@@ -59,7 +62,7 @@ public class SocketIOController : MonoBehaviour {
 		
 	}
 		
-	private void OnBallCollison(SocketIOEvent evt) {
+	private void OnBallOwnerChange(SocketIOEvent evt) {
 		Debug.Log ("ballOWner: "+evt.data.GetField ("name").str);
 		ballOwner = evt.data.GetField ("name").str;
 	}
@@ -81,12 +84,12 @@ public class SocketIOController : MonoBehaviour {
 		socket.Emit ("MOVE", new JSONObject(data));
 	}
 
-	public void SendBallCollisonMsg(){
+	public void SendBallOwnerChangeMsg(){
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 		this.ballOwner = name;// BallOwner 자신으로 수정..
 
 		data["name"] = name;
-		socket.Emit ("BALL_COLLISON", new JSONObject (data));
+		socket.Emit ("BALL_OWNER_CHANGE", new JSONObject (data));
 	}
 
 	public void SendBallMoveMSg() {
