@@ -5,6 +5,7 @@ public class ContentModel {
 	public string id;
 	public string name;
 	public string description;
+	public string modeType;
 
 	public double attention_weight;
 	public double judgement_weight;

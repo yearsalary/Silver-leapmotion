@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SocketIO;
 
-public class SocketIOController : MonoBehaviour {
+public class TableHockeySocketIOController: MonoBehaviour {
 
 	public SocketIOComponent socket;
 	public GameObject playerBar;
