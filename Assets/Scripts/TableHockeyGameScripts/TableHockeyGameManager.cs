@@ -21,8 +21,12 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		this.currentState = State.WAIT;
+		wait_dialogueCanvas.enabled = true;
+		ready_dialogueCanvas.enabled = false;
+		gamePlayUI.enabled = false;
+
 		message.text = "서버 접속시도 중...";
-		WaitGame ();
 	}
 		
 	public void SetServerInfo(float connectedUserCount, List<JSONObject> rooms) {
@@ -49,11 +53,13 @@ public class TableHockeyGameManager : MonoBehaviour {
 		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendLeaveRoomMSg (currentJoinedRoomTitle);
 	}
 
-	public void WaitGame() {
+	public void WaitGame(JSONObject currentServerInfo) {
 		this.currentState = State.WAIT;
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
+
+		SetServerInfo (currentServerInfo.GetField ("clientsLength").n, currentServerInfo.GetField ("rooms").list);
 	}
 
 	public void ReadyGame(JSONObject currentJoinedRoom) {

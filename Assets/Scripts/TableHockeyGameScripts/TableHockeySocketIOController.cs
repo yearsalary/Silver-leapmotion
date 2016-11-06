@@ -135,7 +135,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		});
 
 		if(attendant==null)
-			gameManager.GetComponent<TableHockeyGameManager> ().WaitGame ();
+			gameManager.GetComponent<TableHockeyGameManager> ().WaitGame (evt.data);
 		else
 			gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (evt.data);
 	}
