@@ -12,13 +12,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	public GameObject opponentBar;
 	public GameObject ball;
 	private string ballOwner = "";
-	string name = "A";
+	public string name;
 
 
 	// Use this for initialization
 	void Start () {
 		StartCoroutine (ConnectToServer ());
 		socket.On ("USER_CONNECTED", OnUserConnected);
+		socket.On ("USER_DISCONNECTED", OnUserDisConnected);
+		socket.On ("CREATED_ROOM", OnCreatedRoom);
 		//socket.On ("PLAY", OnUserPlay);
 		//socket.On ("MOVE", OnUSerMove);
 		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
@@ -53,6 +55,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 	
 	private void OnUserConnected(SocketIOEvent evt) {
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("clientsLength") +" OnUserConnected ");
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("rooms") +" OnUserConnected ");
+		float connectedUserCount = evt.data.GetField ("clientsLength").n;
+		List<JSONObject> rooms = evt.data.GetField("rooms").list;
+
+		gameManager.GetComponent<TableHockeyGameManager> ().SetServerInfo (connectedUserCount, rooms);
+	}
+
+	private void OnUserDisConnected(SocketIOEvent evt) {
 		Debug.Log ("Get the msg from server is: " + evt.data.GetField("clientsLength") +" OnUserConnected ");
 		Debug.Log ("Get the msg from server is: " + evt.data.GetField("rooms") +" OnUserConnected ");
 		float connectedUserCount = evt.data.GetField ("clientsLength").n;
