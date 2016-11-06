@@ -25,8 +25,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("DESTROY_ROOM", OnDestroyRoom);
 		socket.On ("JOINED_ROOM", OnJoinedRoom);
 		socket.On ("LEFT_ROOM", OnLeftRoom);
-
-
 		//socket.On ("PLAY", OnUserPlay);
 		//socket.On ("MOVE", OnUSerMove);
 		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
@@ -130,18 +128,20 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnLeftRoom(SocketIOEvent evt) {
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("title") + " OnLeftRoom");
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("master") + " OnLeftRoom");
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("attendants") + " OnLeftRoom");
+		JSONObject currentServerInfo = evt.data.GetField("currentServerInfo");
+		JSONObject roomInfo = evt.data.GetField("roomInfo");
 
-		JSONObject attendant = evt.data.GetField ("attendants").list.Find ((v) => {
+		Debug.Log ("Get the msg from server is: " +currentServerInfo.GetField("clientsLength").n + " OnCreatedRoom");
+		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") + " OnCreatedRoom");
+
+		JSONObject attendant = roomInfo.GetField ("attendants").list.Find ((v) => {
 			return v.str == name;
 		});
 
 		if(attendant==null)
-			gameManager.GetComponent<TableHockeyGameManager> ().WaitGame (evt.data);
+			gameManager.GetComponent<TableHockeyGameManager> ().WaitGame (currentServerInfo);
 		else
-			gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (evt.data);
+			gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (roomInfo);
 	}
 		
 	public void SendBarMoveMSg() {
@@ -176,7 +176,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		data ["title"] = "Room of "+name;
 		data ["master"] = name;
 		socket.Emit ("CREATE_ROOM", new JSONObject (data));
-		socket.On ("CREATED_ROOM", OnCreatedRoom);
 	}
 
 	public void SendJoinRoomMSg(string roomTitle) {
@@ -184,7 +183,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		data ["title"] = roomTitle;
 		data ["attendant"] = name;
 		socket.Emit ("JOIN_ROOM", new JSONObject (data));
-		socket.On ("JOINED_ROOM", OnJoinedRoom);
 	}
 
 	public void SendLeaveRoomMSg(string roomTitle) {
@@ -192,7 +190,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		data ["title"] = roomTitle;
 		data ["attendant"] = name;
 		socket.Emit ("LEAVE_ROOM", new JSONObject (data));
-		socket.On ("LEFT_ROOM", OnLeftRoom);
 	}
 		
 	Vector3 JsonToVector3(string target) {
