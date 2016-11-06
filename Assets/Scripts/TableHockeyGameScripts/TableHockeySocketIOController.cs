@@ -84,10 +84,17 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnCreatedRoom(SocketIOEvent evt) {
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("title") + " OnCreatedRoom");
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("master") + " OnCreatedRoom");
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("attendants") + " OnCreatedRoom");
-		gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (evt.data);
+		JSONObject currentServerInfo = evt.data.GetField("currentServerInfo");
+		JSONObject roomInfo = evt.data.GetField("roomInfo");
+
+		Debug.Log ("Get the msg from server is: " +currentServerInfo.GetField("clientsLength").n + " OnCreatedRoom");
+		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") + " OnCreatedRoom");
+
+	
+		if (roomInfo.GetField ("master").str.Equals (name))
+			gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (roomInfo);
+		else 
+			gameManager.GetComponent<TableHockeyGameManager> ().SetServerInfo (currentServerInfo.GetField("clientLength").n ,currentServerInfo.GetField("rooms").list);
 	}
 
 	private void OnJoinedRoom(SocketIOEvent evt) {
@@ -95,6 +102,21 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		Debug.Log ("Get the msg from server is: " + evt.data.GetField("master") + " OnJoinedRoom");
 		Debug.Log ("Get the msg from server is: " + evt.data.GetField("attendants") + " OnJoinedRoom");
 		gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (evt.data);
+	}
+
+	private void OnLeftRoom(SocketIOEvent evt) {
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("title") + " OnLeftRoom");
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("master") + " OnLeftRoom");
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("attendants") + " OnLeftRoom");
+
+		JSONObject attendant = evt.data.GetField ("attendants").list.Find ((v) => {
+			return v.str == name;
+		});
+
+		if(attendant==null)
+			gameManager.GetComponent<TableHockeyGameManager> ().WaitGame ();
+		else
+			gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (evt.data);
 	}
 		
 	public void SendBarMoveMSg() {
@@ -126,7 +148,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		
 	public void SendCreateRoomMSg() {
 		Dictionary<string, string> data = new Dictionary<string, string> ();
-		data ["title"] = "Room Created by"+name;
+		data ["title"] = "Room of "+name;
 		data ["master"] = name;
 		socket.Emit ("CREATE_ROOM", new JSONObject (data));
 		socket.On ("CREATED_ROOM", OnCreatedRoom);
@@ -144,8 +166,8 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 		data ["title"] = roomTitle;
 		data ["attendant"] = name;
-		socket.Emit ("JOIN_ROOM", new JSONObject (data));
-		socket.On ("JOINED_ROOM", OnJoinedRoom);
+		socket.Emit ("LEAVE_ROOM", new JSONObject (data));
+		socket.On ("LEFT_ROOM", OnLeftRoom);
 	}
 		
 	Vector3 JsonToVector3(string target) {

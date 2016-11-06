@@ -21,7 +21,6 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
 		message.text = "서버 접속시도 중...";
 		WaitGame ();
 	}
@@ -46,7 +45,8 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void LeaveRoom() {
-		//NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendJoinRoomMSg (roomTitle);
+		string currentJoinedRoomTitle = currentJoinedRoom.GetField ("title").str;
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendLeaveRoomMSg (currentJoinedRoomTitle);
 	}
 
 	public void WaitGame() {
