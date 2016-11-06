@@ -21,6 +21,8 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("USER_CONNECTED", OnUserConnected);
 		socket.On ("USER_DISCONNECTED", OnUserDisConnected);
 		socket.On ("CREATED_ROOM", OnCreatedRoom);
+		socket.On ("DESTROY_ROOM", OnDestroyRoom);
+		socket.On ("LEFT_ROOM", OnLeftRoom);
 		//socket.On ("PLAY", OnUserPlay);
 		//socket.On ("MOVE", OnUSerMove);
 		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
@@ -105,7 +107,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		if (roomInfo.GetField ("master").str.Equals (name))
 			gameManager.GetComponent<TableHockeyGameManager> ().ReadyGame (roomInfo);
 		else 
-			gameManager.GetComponent<TableHockeyGameManager> ().SetServerInfo (currentServerInfo.GetField("clientLength").n ,currentServerInfo.GetField("rooms").list);
+			gameManager.GetComponent<TableHockeyGameManager> ().SetServerInfo (currentServerInfo.GetField("clientsLength").n ,currentServerInfo.GetField("rooms").list);
+	}
+
+	private void OnDestroyRoom(SocketIOEvent evt) {
+		JSONObject roomInfo = evt.data;
+	
+		Debug.Log ("Get the msg from server is: " +roomInfo.GetField("title")+ " OnDestroyRoom");
+		SendLeaveRoomMSg (roomInfo.GetField ("title").str);
+
 	}
 
 	private void OnJoinedRoom(SocketIOEvent evt) {
