@@ -20,9 +20,13 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		StartCoroutine (ConnectToServer ());
 		socket.On ("USER_CONNECTED", OnUserConnected);
 		socket.On ("USER_DISCONNECTED", OnUserDisConnected);
+		//room related...
 		socket.On ("CREATED_ROOM", OnCreatedRoom);
 		socket.On ("DESTROY_ROOM", OnDestroyRoom);
+		socket.On ("JOINED_ROOM", OnJoinedRoom);
 		socket.On ("LEFT_ROOM", OnLeftRoom);
+
+
 		//socket.On ("PLAY", OnUserPlay);
 		//socket.On ("MOVE", OnUSerMove);
 		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
