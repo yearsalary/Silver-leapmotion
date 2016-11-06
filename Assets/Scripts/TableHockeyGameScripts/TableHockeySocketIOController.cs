@@ -114,7 +114,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	private void OnDestroyRoom(SocketIOEvent evt) {
 		JSONObject roomInfo = evt.data;
-	
 		Debug.Log ("Get the msg from server is: " +roomInfo.GetField("title")+ " OnDestroyRoom");
 		SendLeaveRoomMSg (roomInfo.GetField ("title").str);
 
@@ -131,12 +130,13 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		JSONObject currentServerInfo = evt.data.GetField("currentServerInfo");
 		JSONObject roomInfo = evt.data.GetField("roomInfo");
 
-		Debug.Log ("Get the msg from server is: " +currentServerInfo.GetField("clientsLength").n + " OnCreatedRoom");
-		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") + " OnCreatedRoom");
+		Debug.Log ("Get the msg from server is: " +currentServerInfo.GetField("clientsLength").n + " OnLeftRoom");
+		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") + " OnLeftRoom");
 
 		JSONObject attendant = roomInfo.GetField ("attendants").list.Find ((v) => {
 			return v.str == name;
 		});
+
 
 		if(attendant==null)
 			gameManager.GetComponent<TableHockeyGameManager> ().WaitGame (currentServerInfo);
