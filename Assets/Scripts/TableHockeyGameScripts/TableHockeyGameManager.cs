@@ -9,10 +9,12 @@ public class TableHockeyGameManager : MonoBehaviour {
 	public GameObject NetworkCtrl;
 	public Dropdown selectRoomDropDown;
 	public Text message;
-	public State currentState;
 	public Canvas wait_dialogueCanvas;
 	public Canvas ready_dialogueCanvas;
 	public Canvas gamePlayUI;
+
+	private State currentState;
+	private JSONObject currentServerInfo;
 	private JSONObject currentJoinedRoom;
 
 	public enum State {
@@ -21,12 +23,15 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		this.currentState = State.WAIT;
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
 
 		message.text = "서버 접속시도 중...";
+	}
+
+	void Update() {
+		SetGameView ();
 	}
 		
 	public void SetServerInfo(float connectedUserCount, List<JSONObject> rooms) {
@@ -53,23 +58,20 @@ public class TableHockeyGameManager : MonoBehaviour {
 		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendLeaveRoomMSg (currentJoinedRoomTitle);
 	}
 
-	public void WaitGame(JSONObject currentServerInfo) {
-		this.currentState = State.WAIT;
+	public void WaitGame() {
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
+		currentJoinedRoom = null;
 
 		SetServerInfo (currentServerInfo.GetField ("clientsLength").n, currentServerInfo.GetField ("rooms").list);
 	}
 
-	public void ReadyGame(JSONObject currentJoinedRoom) {
-		this.currentJoinedRoom = currentJoinedRoom;
-		this.currentState = State.READY;
-		string attendants = "";
-
+	public void ReadyGame() {
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = true;
 		gamePlayUI.enabled = false;
+		string attendants = "";
 
 		currentJoinedRoom.GetField ("attendants").list.ForEach ((v) => {
 			attendants += v.str;
@@ -90,6 +92,36 @@ public class TableHockeyGameManager : MonoBehaviour {
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;
 	
+	}
+
+	public void SetGameView() {
+		switch(currentState) {
+		case State.WAIT:
+			WaitGame ();
+				break;
+		case State.READY:
+			ReadyGame ();
+				break;
+		case State.PLAY:
+			PlayGame ();
+				break;
+		}
+	}
+
+	public void SetCurrentServerInfo(JSONObject serverInfo) {
+		this.currentServerInfo = serverInfo;
+	}
+
+	public void SetCurrentJoinedRoom(JSONObject roomInfo) {
+		this.currentServerInfo = roomInfo;
+	}
+
+	public void SetCurrentState(State state) {
+		this.currentState = state;
+	}
+
+	public State getCurrentState() {
+		return this.currentState;
 	}
 
 }
