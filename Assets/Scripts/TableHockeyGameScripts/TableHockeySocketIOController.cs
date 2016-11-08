@@ -167,8 +167,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " +roomInfo.GetField("title")+ " OnDestroyRoom");
 		SendLeaveRoomMSg (roomInfo.GetField ("title").str);
-
-		tableHockeyGameManager.SetGameView ();
 	}
 
 	private void OnJoinedRoom(SocketIOEvent evt) {
@@ -195,9 +193,11 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") + " OnLeftRoom");
 
 		//room is destroyed
-		if (roomInfo.IsNull) {
+		if (roomInfo==null) {
+			
 			tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
 			tableHockeyGameManager.SetCurrentJoinedRoom (null);
+			tableHockeyGameManager.SetGameView ();
 			return;
 		}
 
