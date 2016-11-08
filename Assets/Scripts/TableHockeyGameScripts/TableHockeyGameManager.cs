@@ -23,15 +23,12 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		this.SetCurrentState (State.WAIT);
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
 
 		message.text = "서버 접속시도 중...";
-	}
-
-	void Update() {
-		SetGameView ();
 	}
 		
 	public void SetServerInfo(float connectedUserCount, List<JSONObject> rooms) {
@@ -59,6 +56,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void WaitGame() {
+		Debug.Log ("WAIT");
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
@@ -68,6 +66,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void ReadyGame() {
+		Debug.Log ("READY");
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = true;
 		gamePlayUI.enabled = false;
@@ -81,12 +80,14 @@ public class TableHockeyGameManager : MonoBehaviour {
 		string msg = "방명: " + currentJoinedRoom.GetField ("title").str + "\n" +
 		             "방장: " + currentJoinedRoom.GetField ("master").str + "\n" +
 		             "참석자: " + attendants;
-		
+
+
 		ready_dialogueCanvas.GetComponentInChildren<Text> ().text = msg;
 
 	}
 
 	public void PlayGame() {
+		Debug.Log ("PLAY");
 		this.currentState = State.PLAY;
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = false;
@@ -113,7 +114,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void SetCurrentJoinedRoom(JSONObject roomInfo) {
-		this.currentServerInfo = roomInfo;
+		this.currentJoinedRoom = roomInfo;
 	}
 
 	public void SetCurrentState(State state) {
