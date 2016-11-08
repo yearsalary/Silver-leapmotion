@@ -79,8 +79,8 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentServerInfo = evt.data.GetField ("currentServerInfo");
 
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("clientsLength") +" OnUserConnected ");
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("rooms") +" OnUserConnected ");
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("clientsLength") +" OnUserDisConnected ");
+		Debug.Log ("Get the msg from server is: " + evt.data.GetField("rooms") +" OnUserDisConnected ");
 	
 
 		tableHockeyGameManager.SetCurrentServerInfo (currentServerInfo);
@@ -188,34 +188,50 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentServerInfo = evt.data.GetField("currentServerInfo");
 		JSONObject roomInfo = evt.data.GetField ("roomInfo");
+		List<JSONObject> currentServer_rooms = currentServerInfo.GetField ("rooms").list;
 
 		Debug.Log ("Get the msg from server is: " +currentServerInfo.GetField("clientsLength").n + " OnLeftRoom");
 		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") + " OnLeftRoom");
 
-		//room is destroyed
-		if (roomInfo==null) {
-			
-			tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
-			tableHockeyGameManager.SetCurrentJoinedRoom (null);
+		tableHockeyGameManager.SetCurrentServerInfo (currentServerInfo);
+
+		if (tableHockeyGameManager.getCurrentState ().Equals (TableHockeyGameManager.State.WAIT)) {
 			tableHockeyGameManager.SetGameView ();
 			return;
 		}
+			
 
-		JSONObject attendant = roomInfo.GetField ("attendants").list.Find ((v) => {
-			return v.str == name;
-		});
+		//currentJoinedroom is destroyed
+		if (roomInfo == null) {
+			JSONObject joinedRoom = currentServer_rooms.Find ((v) => {
+				return v.GetField("title").str == tableHockeyGameManager.getCurrentJoinedRoom().GetField("title").str;
+			});
 
-		if (attendant == null) {
-			tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
-			tableHockeyGameManager.SetCurrentJoinedRoom (null);
-		} else {
-			tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.READY);
-			tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
+			if (joinedRoom == null) {
+
+				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
+				tableHockeyGameManager.SetCurrentJoinedRoom (null);
+				tableHockeyGameManager.SetGameView ();
+				return;
+			}
+			return;
 		}
-		tableHockeyGameManager.SetCurrentServerInfo (currentServerInfo);
 
-		
-		tableHockeyGameManager.SetGameView ();
+
+		if(tableHockeyGameManager.getCurrentJoinedRoom().GetField("title").str.Equals(roomInfo.GetField("title").str)) {
+			JSONObject attendant = roomInfo.GetField ("attendants").list.Find ((v) => {
+				return v.str == name;
+			});
+
+			if (attendant == null) {
+				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
+				tableHockeyGameManager.SetCurrentJoinedRoom (null);
+			} else {
+				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.READY);
+				tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
+			}
+			tableHockeyGameManager.SetGameView ();
+		}
 	}
 		
 	public void SendCreateRoomMSg() {

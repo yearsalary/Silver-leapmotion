@@ -33,6 +33,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		
 	public void SetServerInfo() {
 		List<JSONObject> rooms = currentServerInfo.GetField ("rooms").list;
+		Debug.Log ("qqqqqqqqqqqqqqq"+rooms.Count);
 		float connectedUserCount = currentServerInfo.GetField ("clientsLength").n;
 
 		List<string> options = new List<string> ();
@@ -125,6 +126,10 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	public State getCurrentState() {
 		return this.currentState;
+	}
+
+	public JSONObject getCurrentJoinedRoom() {
+		return this.currentJoinedRoom;
 	}
 
 }
