@@ -31,7 +31,10 @@ public class TableHockeyGameManager : MonoBehaviour {
 		message.text = "서버 접속시도 중...";
 	}
 		
-	public void SetServerInfo(float connectedUserCount, List<JSONObject> rooms) {
+	public void SetServerInfo() {
+		List<JSONObject> rooms = currentServerInfo.GetField ("rooms").list;
+		float connectedUserCount = currentServerInfo.GetField ("clientsLength").n;
+
 		List<string> options = new List<string> ();
 		rooms.ForEach ((v) => {
 			options.Add(v.GetField("title").str);
@@ -61,8 +64,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
 		currentJoinedRoom = null;
-
-		SetServerInfo (currentServerInfo.GetField ("clientsLength").n, currentServerInfo.GetField ("rooms").list);
+		SetServerInfo ();
 	}
 
 	public void ReadyGame() {

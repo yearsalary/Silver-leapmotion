@@ -63,10 +63,11 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		JSONObject currnetUser = evt.data.GetField ("currentUser");
 		JSONObject currentServerInfo = evt.data.GetField ("currentServerInfo");
 
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("clientsLength") +" OnUserConnected ");
-		Debug.Log ("Get the msg from server is: " + evt.data.GetField("rooms") +" OnUserConnected ");
+		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("clientsLength").n +" OnUserConnected ");
+		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") +" OnUserConnected ");
 
 		tableHockeyGameManager.SetCurrentServerInfo (currentServerInfo);
+
 		if (currnetUser.GetField ("name").str.Equals (name)) 
 			tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
 
