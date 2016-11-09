@@ -17,6 +17,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 	private JSONObject currentServerInfo;
 	private JSONObject currentJoinedRoom;
 
+	private Button playReadybtn;
+	private Button playReadyCancelbtn;
+
 	public enum State {
 		WAIT,READY,PLAY
 	}
@@ -29,6 +32,11 @@ public class TableHockeyGameManager : MonoBehaviour {
 		gamePlayUI.enabled = false;
 
 		message.text = "서버 접속시도 중...";
+
+		playReadybtn = findChildrenBtn ("StartReadyButton");
+		playReadyCancelbtn = findChildrenBtn ("StartReadyCancelButton");
+		playReadybtn.interactable = true;
+		playReadyCancelbtn.interactable = false;
 	}
 		
 	public void SetServerInfo() {
@@ -59,15 +67,17 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void PlayReady() {
-		Button[] buttons;
-		buttons = ready_dialogueCanvas.GetComponentsInChildren<Button> ();
-		foreach (Button btn in buttons) {
-			if (btn.name.Contains ("StartReadyButton"))
-				btn.interactable = false;
-		}
-
+		playReadybtn.interactable = false;
+		playReadyCancelbtn.interactable = true;
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayReadyMSg ();
 	}
 
+	public void PlayReadyCancel() {
+		playReadyCancelbtn.interactable = false;
+		playReadybtn.interactable = true;
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayReadyCancelMSg ();
+	}
+		
 	public void WaitGame() {
 		Debug.Log ("WAIT");
 		wait_dialogueCanvas.enabled = true;
@@ -140,6 +150,17 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	public JSONObject getCurrentJoinedRoom() {
 		return this.currentJoinedRoom;
+	}
+
+	private Button findChildrenBtn(string name) {
+		Button[] buttons;
+		buttons = ready_dialogueCanvas.GetComponentsInChildren<Button> ();
+
+		foreach (Button btn in buttons) {
+			if (btn.name.Contains (name))
+				return btn;
+		}
+		return null;
 	}
 
 }

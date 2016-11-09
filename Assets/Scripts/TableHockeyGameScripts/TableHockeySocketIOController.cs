@@ -25,6 +25,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("DESTROY_ROOM", OnDestroyRoom);
 		socket.On ("JOINED_ROOM", OnJoinedRoom);
 		socket.On ("LEFT_ROOM", OnLeftRoom);
+		socket.On ("READY_CHANGE", OnUserPlayReadyChange);
 		socket.On ("PLAY", OnUserPlay);
 		//socket.On ("MOVE", OnUSerMove);
 		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
@@ -79,6 +80,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentServerInfo = evt.data;
 
+
 		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("clientsLength").n +" OnUserDisConnected ");
 		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") +" OnUserDisConnected ");
 	
@@ -87,6 +89,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 		tableHockeyGameManager.SetGameView ();
 
+	}
+
+	private void OnUserPlayReadyChange(SocketIOEvent evt) {
+		JSONObject roomInfo = evt.data;
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
+		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayReadyChange ");
+
+		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
+		tableHockeyGameManager.SetGameView ();
 	}
 
 	private void OnUserPlay(SocketIOEvent evt) {
@@ -254,9 +265,26 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.Emit ("LEAVE_ROOM", new JSONObject (data));
 	}
 
-	public void SendPlayReadyMSg(string roomTitle) {
-		
+	public void SendPlayReadyMSg() {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
+		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["attendant"] = name;
+		socket.Emit ("PLAY_READY", new JSONObject (data));
 	}
+
+	public void SendPlayReadyCancelMSg() {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
+		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["attendant"] = name;
+		socket.Emit ("PLAY_READY_CANCEL", new JSONObject (data));
+	}
+
 		
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;
