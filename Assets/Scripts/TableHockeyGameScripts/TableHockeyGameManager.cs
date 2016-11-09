@@ -59,6 +59,16 @@ public class TableHockeyGameManager : MonoBehaviour {
 		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendLeaveRoomMSg (currentJoinedRoomTitle);
 	}
 
+	public void PlayReady() {
+		Button[] buttons;
+		buttons = ready_dialogueCanvas.GetComponentsInChildren<Button> ();
+		foreach (Button btn in buttons) {
+			if (btn.name.Contains ("StartReadyButton"))
+				btn.interactable = false;
+		}
+
+	}
+
 	public void WaitGame() {
 		Debug.Log ("WAIT");
 		wait_dialogueCanvas.enabled = true;

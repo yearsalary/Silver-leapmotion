@@ -25,7 +25,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("DESTROY_ROOM", OnDestroyRoom);
 		socket.On ("JOINED_ROOM", OnJoinedRoom);
 		socket.On ("LEFT_ROOM", OnLeftRoom);
-		//socket.On ("PLAY", OnUserPlay);
+		socket.On ("PLAY", OnUserPlay);
 		//socket.On ("MOVE", OnUSerMove);
 		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
 		//socket.On ("BALL_MOVE", OnBallMove);
