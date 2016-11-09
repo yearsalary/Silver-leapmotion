@@ -111,7 +111,6 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	public void PlayGame() {
 		Debug.Log ("PLAY");
-		this.currentState = State.PLAY;
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;

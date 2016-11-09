@@ -27,9 +27,9 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("LEFT_ROOM", OnLeftRoom);
 		socket.On ("READY_CHANGE", OnUserPlayReadyChange);
 		socket.On ("PLAY", OnUserPlay);
-		//socket.On ("MOVE", OnUSerMove);
-		//socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
-		//socket.On ("BALL_MOVE", OnBallMove);
+		socket.On ("MOVE", OnUSerMove);
+		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
+		socket.On ("BALL_MOVE", OnBallMove);
 	}
 
 	IEnumerator ConnectToServer() {
@@ -54,7 +54,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			SendBallMoveMSg ();
 
 		if ((Vector3.Distance (playerBar.transform.position, ball.transform.position) <
-			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !isBallOwner())
+			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !ballOwner.Equals (name))
 			SendBallOwnerChangeMsg ();
 
 	}
@@ -101,13 +101,16 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnUserPlay(SocketIOEvent evt) {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlay ");
+
+		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.PLAY);
+		tableHockeyGameManager.SetGameView ();
 	}
 
 	private void OnUSerMove(SocketIOEvent evt) {
 		if (name != evt.data.GetField ("name").str) 
 			opponentBar.transform.position  = -JsonToVector3 (evt.data.GetField ("position").str);
-		
 	}
 		
 	private void OnBallOwnerChange(SocketIOEvent evt) {
@@ -117,34 +120,42 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		
 	private void OnBallMove(SocketIOEvent evt) {
 		Debug.Log (evt.data.GetField ("moveDirection").str);
-		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (-JsonToVector3(evt.data.GetField ("moveDirection").str));
-		ball.transform.position  = - JsonToVector3 (evt.data.GetField ("position").str);
+		if (!ballOwner.Equals (name)) {
+			ball.GetComponent<TableHockeyBall> ().SetMoveDirection (-JsonToVector3 (evt.data.GetField ("moveDirection").str));
+			ball.transform.position = -JsonToVector3 (evt.data.GetField ("position").str);
+		}
 	}
 		
 	public void SendBarMoveMSg() {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Transform transform = playerBar.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
 		data["name"] = name;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
-
+		data ["title"] = tableHockeyGameManager.getCurrentJoinedRoom ().GetField ("title").str;
 		socket.Emit ("MOVE", new JSONObject(data));
 	}
 
 	public void SendBallOwnerChangeMsg(){
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 		this.ballOwner = name;// BallOwner 자신으로 수정..
 
 		data["name"] = name;
+		data ["title"] = tableHockeyGameManager.getCurrentJoinedRoom ().GetField ("title").str;
 		socket.Emit ("BALL_OWNER_CHANGE", new JSONObject (data));
 	}
 
 	public void SendBallMoveMSg() {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Transform transform = ball.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 		Vector3 ballMoveDirection = ball.GetComponent<TableHockeyBall> ().getMoveDirection ();
 		data["moveDirection"] = ballMoveDirection.x + "," + ballMoveDirection.y + "," + ballMoveDirection.z;
 		data["position"] = transform.position.x + "," + transform.position.y + "," + transform.position.z;
+		data ["title"] = tableHockeyGameManager.getCurrentJoinedRoom ().GetField ("title").str;
+
 		socket.Emit ("BALL_MOVE", new JSONObject(data));
 	}
 
@@ -296,13 +307,8 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public bool isBallOwner() {
-		return this.ballOwner.Equals(name);
+		return ballOwner.Equals (name);
 	}
 
-	public void SetBallOwnerByMe() {
-		this.ballOwner = name;
-	}
-
-		
 }
 
