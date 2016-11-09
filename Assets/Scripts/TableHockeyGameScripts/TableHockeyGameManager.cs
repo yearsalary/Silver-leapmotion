@@ -33,7 +33,6 @@ public class TableHockeyGameManager : MonoBehaviour {
 		
 	public void SetServerInfo() {
 		List<JSONObject> rooms = currentServerInfo.GetField ("rooms").list;
-		Debug.Log ("qqqqqqqqqqqqqqq"+rooms.Count);
 		float connectedUserCount = currentServerInfo.GetField ("clientsLength").n;
 
 		List<string> options = new List<string> ();
@@ -86,13 +85,14 @@ public class TableHockeyGameManager : MonoBehaviour {
 		string attendants = "";
 
 		currentJoinedRoom.GetField ("attendants").list.ForEach ((v) => {
-			attendants += v.str;
+			attendants += v.GetField("name").str;
+			attendants += "(준비상태:"+v.GetField("ready").b+")";
 			attendants += "/ ";	
 		});
 
 		string msg = "방명: " + currentJoinedRoom.GetField ("title").str + "\n" +
 		             "방장: " + currentJoinedRoom.GetField ("master").str + "\n" +
-		             "참석자: " + attendants;
+		             "참석자: \n" + attendants;
 
 
 		ready_dialogueCanvas.GetComponentInChildren<Text> ().text = msg;
