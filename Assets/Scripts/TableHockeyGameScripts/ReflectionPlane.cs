@@ -3,8 +3,12 @@ using System.Collections;
 
 public class ReflectionPlane : MonoBehaviour {
 	public GameObject ball;
-	public GameObject netWorkCtrl;
+	private GameObject netWorkCtrl;
 	bool isFirstColEnter;
+
+	void Start() {
+		netWorkCtrl = GameObject.Find ("NetWorkController");
+	}
 
 	void OnCollisionStay(Collision col)  { 
 		
