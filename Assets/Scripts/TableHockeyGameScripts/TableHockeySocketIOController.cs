@@ -120,7 +120,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 		
 	private void OnBallMove(SocketIOEvent evt) {
-		Debug.Log (evt.data.GetField ("moveDirection").str);
 		if (!ballOwner.Equals (name)) {
 			ball.GetComponent<TableHockeyBall> ().SetMoveDirection (-JsonToVector3 (evt.data.GetField ("moveDirection").str));
 			ball.transform.position = -JsonToVector3 (evt.data.GetField ("position").str);
