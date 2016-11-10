@@ -4,7 +4,7 @@ using System.Collections;
 public class TableHockeyBall : MonoBehaviour {
 	public GameObject netWorkCtrl;
 	private Vector3 moveDirection;
-	private float speed = 10f;
+	private float speed = 1.5f;
 
 	void Start() {
 		this.moveDirection = new Vector3 (0, 0, 0);
