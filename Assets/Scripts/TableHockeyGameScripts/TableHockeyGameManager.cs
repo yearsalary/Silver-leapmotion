@@ -43,12 +43,10 @@ public class TableHockeyGameManager : MonoBehaviour {
 		playReadyCancelbtn.interactable = false;
 	}
 		
-	private IEnumerator SetGameTimer() {
-		while (time >= 0) {
-			time -= 1f;
-			yield return new WaitForSeconds (1);
-			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
-		}
+	private void SetGameTimer() {
+		
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
+
 	}
 		
 	public void SetServerInfo() {
@@ -130,6 +128,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		//master initGame
 		if (currentJoinedRoom.GetField ("master").str.Equals (userName)) {
 			//StartCoroutine (SetGameTimer ());
+			SetGameTimer();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 		}
