@@ -44,18 +44,16 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if(currentState.Equals(State.PLAY) && currentJoinedRoom.GetField("master").str.Equals(userName) ) 
-			SetGameTimer ();
+		if (currentState.Equals (State.PLAY) && currentJoinedRoom.GetField ("master").str.Equals (userName))
+			StartCoroutine (SetGameTimer());
 		
 	}
 
-	private void SetGameTimer() {
-		float sec = 0;
-		sec += Time.deltaTime;
-		if (sec >= 1) {
-			time -= sec;
-			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
-		}
+	private IEnumerator SetGameTimer() {
+		yield return new WaitForSeconds(1.0f);
+		time -= 1f;
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
+
 	}
 		
 	public void SetServerInfo() {
