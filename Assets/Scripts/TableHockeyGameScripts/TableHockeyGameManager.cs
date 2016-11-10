@@ -21,7 +21,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	private Button playReadyCancelbtn;
 
 	private float time = 30f;
-	private string userName = NetworkCtrl.GetComponent<TableHockeySocketIOController>().name;
+	private string userName;
 
 	public enum State {
 		WAIT,READY,PLAY
@@ -29,6 +29,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		userName = NetworkCtrl.GetComponent<TableHockeySocketIOController>().name;
 		this.SetCurrentState (State.WAIT);
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
@@ -55,7 +56,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		}
 
 		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position.z = -4.5f;
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position.Set (0f,0f,-4.5f);
 	}
 		
 	public void SetServerInfo() {
