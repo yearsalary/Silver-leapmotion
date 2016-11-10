@@ -7,7 +7,7 @@ public class ReflectionPlane : MonoBehaviour {
 	bool isFirstColEnter;
 
 	void Start() {
-		netWorkCtrl = GameObject.Find ("NetWorkController");
+		netWorkCtrl = GameObject.Find ("NetworkController");
 	}
 
 	void OnCollisionStay(Collision col)  { 
