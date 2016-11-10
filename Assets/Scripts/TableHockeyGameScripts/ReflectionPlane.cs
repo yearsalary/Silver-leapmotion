@@ -3,15 +3,16 @@ using System.Collections;
 
 public class ReflectionPlane : MonoBehaviour {
 	public GameObject ball;
+	public GameObject netWorkCtrl;
 	bool isFirstColEnter;
 
-	void OnCollisionStay(Collision col) 
-	{ 
+	void OnCollisionStay(Collision col)  { 
+		
 		//Debug.Log ("Stay");
-		if (col.gameObject.Equals (ball) && isFirstColEnter) {
-			
+		if (col.gameObject.Equals (ball) && isFirstColEnter && netWorkCtrl.GetComponent<TableHockeySocketIOController>().isBallOwner()) {
+			if(gameObject.tag.Equals("TableHockeyGoal"))
+				Debug.Log ("wwwwwwwwwwwwwwww"+gameObject.tag);	
 			//if (gameObject.tag.Equals ("TableHockeyGoal"))
-			Debug.Log ("wwwwwwwwwwwwwwww");
 			Vector3 reflectedVector = Vector3.Reflect (ball.GetComponent<TableHockeyBall>().getMoveDirection(),col.contacts [0].normal.normalized);
 			//Debug.Log (reflectedVector.ToString ());
 			reflectedVector.Set (reflectedVector.x,0f,reflectedVector.z);
