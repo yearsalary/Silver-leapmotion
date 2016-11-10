@@ -140,9 +140,10 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 		Debug.Log ("Get the msg from server is: " + sender + "sec OnTimeChange ");
 
-		if (!sender.Equals(name))
+		if (sender.Equals(name))
 			tableHockeyGameManager.setOpponentPlayerPoint (tableHockeyGameManager.getOpponentPlayerPoint()+1);
-
+		else
+			tableHockeyGameManager.setPlayerPoint (tableHockeyGameManager.getPlayerPoint()+1);
 		tableHockeyGameManager.SetPlayPointView ();	
 	}
 		
@@ -290,37 +291,37 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public void SendPlayReadyMSg() {
-		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		JSONObject currentJoinedRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
-		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["title"] = currentJoinedRoom.GetField("title").str;
 		data ["attendant"] = name;
 		socket.Emit ("PLAY_READY", new JSONObject (data));
 	}
 
 	public void SendPlayReadyCancelMSg() {
-		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		JSONObject currentJoinedRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
-		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["title"] = currentJoinedRoom.GetField("title").str;
 		data ["attendant"] = name;
 		socket.Emit ("PLAY_READY_CANCEL", new JSONObject (data));
 	}
 
 	public void SendPlayTimeMSg(float time) {
-		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		JSONObject currentJoinedRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
-		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["title"] = currentJoinedRoom.GetField("title").str;
 		data ["time"] = time.ToString();
 		socket.Emit ("PLAY_TIME_CHANGE", new JSONObject (data));
 	}
 
 	public void SendPointInfoMSg() {
-		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		JSONObject currentJoinedRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
-		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["title"] = currentJoinedRoom.GetField("title").str;
 		data ["name"] = name;
 
 		socket.Emit ("PLAY_POINT_CHANGE", new JSONObject (data));
@@ -340,6 +341,13 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		return ballOwner.Equals (name);
 	}
 
-
+	public string getOtehrPlayerName() {
+		JSONObject currentJoinedRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		JSONObject otherPlayer;
+		otherPlayer = currentJoinedRoom.GetField ("attendants").list.Find ((v) => {
+			return !v.GetField("name").str.Equals(name);
+		});
+		return otherPlayer.GetField ("name").str;
+	}
 }
 

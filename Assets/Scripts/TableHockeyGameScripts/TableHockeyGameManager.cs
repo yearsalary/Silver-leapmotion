@@ -197,8 +197,8 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	public void SetPlayPointView() {
 		Text txt = findChildrenTxt ("PointText");
-		txt.text = "PlayerPoint: " + playerPoint;
-		txt.text += "opponentPlayerPoint: " + opponentPlayerPoint;
+		txt.text = socketIOCtrl.name +" " + playerPoint +" :";
+		txt.text += opponentPlayerPoint + " " + socketIOCtrl.getOtehrPlayerName ();
 	}
 
 	public void SetPlayTime(float time) {
@@ -226,6 +226,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		}
 		return null;
 	}
+
 
 }
 
