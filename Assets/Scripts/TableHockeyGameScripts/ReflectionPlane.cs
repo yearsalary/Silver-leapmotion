@@ -6,14 +6,10 @@ public class ReflectionPlane : MonoBehaviour {
 	private GameObject netWorkCtrl;
 	bool isFirstColEnter;
 
-	void Start() {
-		netWorkCtrl = GameObject.Find ("NetworkController");
-	}
-
 	void OnCollisionStay(Collision col)  { 
 		
 		//Debug.Log ("Stay");
-		if (col.gameObject.Equals (ball) && isFirstColEnter && netWorkCtrl.GetComponent<TableHockeySocketIOController>().isBallOwner()) {
+		if (col.gameObject.Equals (ball) && isFirstColEnter) {
 			if(gameObject.tag.Equals("TableHockeyGoal"))
 				Debug.Log ("wwwwwwwwwwwwwwww"+gameObject.tag);	
 			//if (gameObject.tag.Equals ("TableHockeyGoal"))
