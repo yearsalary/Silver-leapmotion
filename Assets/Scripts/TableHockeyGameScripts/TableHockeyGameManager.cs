@@ -44,7 +44,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if(currentJoinedRoom.GetField("master").Equals(userName) && currentState.Equals(State.PLAY)) 
+		if(currentState.Equals(State.PLAY) && currentJoinedRoom.GetField("master").Equals(userName) ) 
 			SetGameTimer ();
 		
 	}
