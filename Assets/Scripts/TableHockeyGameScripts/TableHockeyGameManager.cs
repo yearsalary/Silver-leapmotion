@@ -50,13 +50,12 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	private void SetGameTimer() {
-		time -= Time.deltaTime;
-		if (time <= 0) {
-
+		float sec = 0;
+		sec += Time.deltaTime;
+		if (sec >= 1) {
+			time -= sec;
+			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
 		}
-
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 	}
 		
 	public void SetServerInfo() {
@@ -138,7 +137,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		//master initGame
 		if (currentJoinedRoom.GetField ("master").Equals (userName)) {
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
-
+			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 		}
 			
 	}
