@@ -55,7 +55,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			SendBallMoveMSg ();
 
 		if ((Vector3.Distance (playerBar.transform.position, ball.transform.position) <
-			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !ballOwner.Equals (name))
+			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !ballOwner.Equals (name) && ball.transform.position.z<0f)
 			SendBallOwnerChangeMsg ();
 
 	}
