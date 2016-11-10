@@ -20,6 +20,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 	private Button playReadybtn;
 	private Button playReadyCancelbtn;
 
+	private float time = 30f;
+	private string userName = NetworkCtrl.GetComponent<TableHockeySocketIOController>().name;
+
 	public enum State {
 		WAIT,READY,PLAY
 	}
@@ -37,6 +40,22 @@ public class TableHockeyGameManager : MonoBehaviour {
 		playReadyCancelbtn = findChildrenBtn ("StartReadyCancelButton");
 		playReadybtn.interactable = true;
 		playReadyCancelbtn.interactable = false;
+	}
+
+	void Update() {
+		if(currentJoinedRoom.GetField("master").Equals(userName) && currentState.Equals(State.PLAY)) 
+			SetGameTimer ();
+		
+	}
+
+	private void SetGameTimer() {
+		time -= Time.deltaTime;
+		if (time <= 0) {
+
+		}
+
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position.z = -4.5f;
 	}
 		
 	public void SetServerInfo() {
@@ -114,7 +133,13 @@ public class TableHockeyGameManager : MonoBehaviour {
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;
-	
+
+		//master initGame
+		if (currentJoinedRoom.GetField ("master").Equals (userName)) {
+			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
+
+		}
+			
 	}
 
 	public void SetGameView() {
@@ -160,6 +185,10 @@ public class TableHockeyGameManager : MonoBehaviour {
 				return btn;
 		}
 		return null;
+	}
+
+	public void SetPlayTime(float time) {
+		this.time = time;
 	}
 
 }

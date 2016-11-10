@@ -30,6 +30,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("MOVE", OnUSerMove);
 		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
 		socket.On ("BALL_MOVE", OnBallMove);
+		socket.On ("PLAY_TIME_CHANGED", OnTimeChange);
 	}
 
 	IEnumerator ConnectToServer() {
@@ -123,6 +124,14 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			ball.GetComponent<TableHockeyBall> ().SetMoveDirection (-JsonToVector3 (evt.data.GetField ("moveDirection").str));
 			ball.transform.position = -JsonToVector3 (evt.data.GetField ("position").str);
 		}
+	}
+
+	private void OnTimeChange(SocketIOEvent evt) {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
+		string time = evt.data.GetField ("time").n;
+		Debug.Log ("Get the msg from server is: " + time + " OnTimeChange ");
+		if(!isBallOwner())
+			tableHockeyGameManager.SetPlayTime (time);
 	}
 		
 	public void SendBarMoveMSg() {
@@ -295,6 +304,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.Emit ("PLAY_READY_CANCEL", new JSONObject (data));
 	}
 
+	public void SendPlayTimeMSg(float time) {
+		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
+		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["time"] = time.ToString();
+		socket.Emit ("PLAY_TIME_CHANGE", new JSONObject (data));
+	}
 		
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;
@@ -307,6 +325,10 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	public bool isBallOwner() {
 		return ballOwner.Equals (name);
+	}
+
+	public void SetBallOwner(string ballOwner) {
+		this.ballOwner = ballOwner;
 	}
 
 }

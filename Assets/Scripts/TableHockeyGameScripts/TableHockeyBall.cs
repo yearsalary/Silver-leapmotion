@@ -11,7 +11,7 @@ public class TableHockeyBall : MonoBehaviour {
 	}
 
 	void Update () {
-		if(moveDirection!=Vector3.zero && netWorkCtrl.GetComponent<TableHockeySocketIOController>().isBallOwner())
+		if(moveDirection!=Vector3.zero && transform.position.z < -4f && netWorkCtrl.GetComponent<TableHockeySocketIOController>().isBallOwner())
 			transform.Translate (moveDirection * speed* Time.deltaTime);
 	}
 
