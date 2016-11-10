@@ -127,11 +127,14 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnTimeChange(SocketIOEvent evt) {
+		//Debug.Log ("Get the msg from server is: " + evt.data+ " OnTimeChange ");
+		/*
 		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		float time = evt.data.n;
 		Debug.Log ("Get the msg from server is: " + time + " OnTimeChange ");
 		if(!isBallOwner())
 			tableHockeyGameManager.SetPlayTime (time);
+		*/
 	}
 		
 	public void SendBarMoveMSg() {
