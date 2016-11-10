@@ -13,6 +13,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	public Canvas ready_dialogueCanvas;
 	public Canvas gamePlayUI;
 
+	private TableHockeySocketIOController socketIOCtrl;
 	private State currentState;
 	private JSONObject currentServerInfo;
 	private JSONObject currentJoinedRoom;
@@ -21,7 +22,8 @@ public class TableHockeyGameManager : MonoBehaviour {
 	private Button playReadyCancelbtn;
 
 	private float time = 30f;
-	private string userName;
+	private float playerPoint = 0f;
+	private float opponentPlayerPoint = 0f;
 
 	public enum State {
 		WAIT,READY,PLAY
@@ -29,7 +31,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		userName = NetworkCtrl.GetComponent<TableHockeySocketIOController>().name;
+		socketIOCtrl = NetworkCtrl.GetComponent<TableHockeySocketIOController> ();
 		this.SetCurrentState (State.WAIT);
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
@@ -51,7 +53,6 @@ public class TableHockeyGameManager : MonoBehaviour {
 		}
 		//시간종료...
 
-
 	}
 		
 	public void SetServerInfo() {
@@ -68,29 +69,29 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void CreateRoom() {
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendCreateRoomMSg ();
+		socketIOCtrl.SendCreateRoomMSg ();
 	}
 
 	public void JoinRoom() {
 		string roomTitle = selectRoomDropDown.captionText.text;
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendJoinRoomMSg (roomTitle);
+		socketIOCtrl.SendJoinRoomMSg (roomTitle);
 	}
 
 	public void LeaveRoom() {
 		string currentJoinedRoomTitle = currentJoinedRoom.GetField ("title").str;
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendLeaveRoomMSg (currentJoinedRoomTitle);
+		socketIOCtrl.SendLeaveRoomMSg (currentJoinedRoomTitle);
 	}
 
 	public void PlayReady() {
 		playReadybtn.interactable = false;
 		playReadyCancelbtn.interactable = true;
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayReadyMSg ();
+		socketIOCtrl.SendPlayReadyMSg ();
 	}
 
 	public void PlayReadyCancel() {
 		playReadyCancelbtn.interactable = false;
 		playReadybtn.interactable = true;
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayReadyCancelMSg ();
+		socketIOCtrl.SendPlayReadyCancelMSg ();
 	}
 		
 	public void WaitGame() {
@@ -129,9 +130,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;
-
+		SetPlayPointView ();
 		//master initGame
-		if (currentJoinedRoom.GetField ("master").str.Equals (userName)) {
+		if (currentJoinedRoom.GetField ("master").str.Equals (socketIOCtrl.name)) {
 			StartCoroutine (SetPlayTimer ());
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
@@ -165,6 +166,14 @@ public class TableHockeyGameManager : MonoBehaviour {
 		this.currentState = state;
 	}
 
+	public void setPlayerPoint(float point) {
+		this.playerPoint = point;
+	}
+
+	public void setOpponentPlayerPoint(float point) {
+		this.opponentPlayerPoint = point;
+	}
+
 	public State getCurrentState() {
 		return this.currentState;
 	}
@@ -172,16 +181,30 @@ public class TableHockeyGameManager : MonoBehaviour {
 	public JSONObject getCurrentJoinedRoom() {
 		return this.currentJoinedRoom;
 	}
+
+	public float getPlayerPoint() {
+		return this.playerPoint;
+	}
+
+	public float getOpponentPlayerPoint() {
+		return this.opponentPlayerPoint;
+	}
 		
 	public void SetPlayTimeView() {
 		Text txt = findChildrenTxt ("TimeText");
 		txt.text = "Time: " + time;
 	}
 
+	public void SetPlayPointView() {
+		Text txt = findChildrenTxt ("PointText");
+		txt.text = "PlayerPoint: " + playerPoint;
+		txt.text += "opponentPlayerPoint: " + opponentPlayerPoint;
+	}
+
 	public void SetPlayTime(float time) {
 		this.time = time;
 	}
-
+		
 	private Button findChildrenBtn(string name) {
 		Button[] buttons;
 		buttons = ready_dialogueCanvas.GetComponentsInChildren<Button> ();

@@ -11,12 +11,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	public GameObject playerBar;
 	public GameObject opponentBar;
 	public GameObject ball;
+	private TableHockeyGameManager tableHockeyGameManager;
+
 	private string ballOwner = "";
 	public string name;
 
 
 	// Use this for initialization
 	void Start () {
+		tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		StartCoroutine (ConnectToServer ());
 		socket.On ("USER_CONNECTED", OnUserConnected);
 		socket.On ("USER_DISCONNECTED", OnUserDisConnected);
@@ -31,6 +34,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
 		socket.On ("BALL_MOVE", OnBallMove);
 		socket.On ("PLAY_TIME_CHANGED", OnTimeChange);
+		socket.On ("PLAY_POINT_CHANGED", OnPointChange);
 	}
 
 	IEnumerator ConnectToServer() {
@@ -61,7 +65,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 	
 	private void OnUserConnected(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currnetUser = evt.data.GetField ("currentUser");
 		JSONObject currentServerInfo = evt.data.GetField ("currentServerInfo");
 
@@ -78,9 +81,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnUserDisConnected(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentServerInfo = evt.data;
-
 
 		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("clientsLength").n +" OnUserDisConnected ");
 		Debug.Log ("Get the msg from server is: " + currentServerInfo.GetField("rooms") +" OnUserDisConnected ");
@@ -94,7 +95,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	private void OnUserPlayReadyChange(SocketIOEvent evt) {
 		JSONObject roomInfo = evt.data;
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayReadyChange ");
 
 		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
@@ -102,7 +102,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnUserPlay(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlay ");
 
 		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.PLAY);
@@ -127,17 +126,27 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnTimeChange(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
-		float time = evt.data.GetField ("time").n;
+		string time = evt.data.GetField ("time").str;
+
 		Debug.Log ("Get the msg from server is: " + time + "sec OnTimeChange ");
 
 		if (!isBallOwner ())
-			tableHockeyGameManager.SetPlayTime (time);
-		tableHockeyGameManager.SetPlayTimeView ();
+			tableHockeyGameManager.SetPlayTime (int.Parse (time));
+		tableHockeyGameManager.SetPlayTimeView ();	
+	}
+
+	private void OnPointChange(SocketIOEvent evt) {
+		string sender = evt.data.GetField ("name").str;
+
+		Debug.Log ("Get the msg from server is: " + sender + "sec OnTimeChange ");
+
+		if (!sender.Equals(name))
+			tableHockeyGameManager.setOpponentPlayerPoint (tableHockeyGameManager.getOpponentPlayerPoint()+1);
+
+		tableHockeyGameManager.SetPlayPointView ();	
 	}
 		
 	public void SendBarMoveMSg() {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Transform transform = playerBar.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
@@ -148,7 +157,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public void SendBallOwnerChangeMsg(){
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 		this.ballOwner = name;// BallOwner 자신으로 수정..
 
@@ -158,7 +166,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public void SendBallMoveMSg() {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		Transform transform = ball.GetComponent<Transform> ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 		Vector3 ballMoveDirection = ball.GetComponent<TableHockeyBall> ().getMoveDirection ();
@@ -173,7 +180,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	 *	room related event hendler.
 	 * */
 	private void OnCreatedRoom(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentServerInfo = evt.data.GetField("currentServerInfo");
 		JSONObject roomInfo = evt.data.GetField("roomInfo");
 
@@ -195,14 +201,12 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	private void OnDestroyRoom(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " +roomInfo.GetField("title")+ " OnDestroyRoom");
 		SendLeaveRoomMSg (roomInfo.GetField ("title").str);
 	}
 
 	private void OnJoinedRoom(SocketIOEvent evt) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " + evt.data.GetField("title") + " OnJoinedRoom");
 		Debug.Log ("Get the msg from server is: " + evt.data.GetField("master") + " OnJoinedRoom");
@@ -216,8 +220,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	}
 
-	private void OnLeftRoom(SocketIOEvent evt) {	
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
+	private void OnLeftRoom(SocketIOEvent evt) {
 		JSONObject currentServerInfo = evt.data.GetField("currentServerInfo");
 		JSONObject roomInfo = evt.data.GetField ("roomInfo");
 		List<JSONObject> currentServer_rooms = currentServerInfo.GetField ("rooms").list;
@@ -287,7 +290,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public void SendPlayReadyMSg() {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
@@ -297,7 +299,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public void SendPlayReadyCancelMSg() {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
@@ -307,7 +308,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 
 	public void SendPlayTimeMSg(float time) {
-		TableHockeyGameManager tableHockeyGameManager = gameManager.GetComponent<TableHockeyGameManager> ();
 		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
 		Dictionary<string, string> data = new Dictionary<string, string> ();
 
@@ -315,6 +315,17 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		data ["time"] = time.ToString();
 		socket.Emit ("PLAY_TIME_CHANGE", new JSONObject (data));
 	}
+
+	public void SendPointInfoMSg() {
+		JSONObject currentJoindRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data ["title"] = currentJoindRoom.GetField("title").str;
+		data ["name"] = name;
+
+		socket.Emit ("PLAY_POINT_CHANGE", new JSONObject (data));
+	}
+
 		
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;
