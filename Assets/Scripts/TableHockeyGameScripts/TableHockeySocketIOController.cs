@@ -131,11 +131,9 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		float time = evt.data.GetField ("time").n;
 		Debug.Log ("Get the msg from server is: " + time + "sec OnTimeChange ");
 
-		if (!isBallOwner ()) {
+		if (!isBallOwner ())
 			tableHockeyGameManager.SetPlayTime (time);
-		}
 		tableHockeyGameManager.SetPlayTimeView ();
-	
 	}
 		
 	public void SendBarMoveMSg() {
