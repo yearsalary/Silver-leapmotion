@@ -56,7 +56,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		}
 
 		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position.Set (0f,0f,-4.5f);
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 	}
 		
 	public void SetServerInfo() {
