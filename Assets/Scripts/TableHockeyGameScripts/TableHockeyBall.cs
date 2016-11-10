@@ -16,7 +16,6 @@ public class TableHockeyBall : MonoBehaviour {
 	}
 
 	public void SetMoveDirection(Vector3 moveDirection) {
-		//Debug.Log ("qqqq"+moveDirection);
 		this.moveDirection = moveDirection;
 	}
 

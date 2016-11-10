@@ -55,7 +55,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			SendBallMoveMSg ();
 
 		if ((Vector3.Distance (playerBar.transform.position, ball.transform.position) <
-			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !ballOwner.Equals (name) && ball.transform.position.z<0)
+			Vector3.Distance (opponentBar.transform.position, ball.transform.position)) && !ballOwner.Equals (name))
 			SendBallOwnerChangeMsg ();
 
 	}
@@ -231,7 +231,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			});
 
 			if (joinedRoom == null) {
-				Debug.Log ("qweqweqweqweqweqweqeqweqe");
 				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
 				tableHockeyGameManager.SetCurrentJoinedRoom (null);
 				tableHockeyGameManager.SetGameView ();	
