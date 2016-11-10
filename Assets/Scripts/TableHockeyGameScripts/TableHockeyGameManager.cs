@@ -43,9 +43,14 @@ public class TableHockeyGameManager : MonoBehaviour {
 		playReadyCancelbtn.interactable = false;
 	}
 		
-	private void SetGameTimer() {
-		
-		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
+	private IEnumerator SetPlayTimer() {
+		while(time>=0) {
+			yield return new WaitForSeconds (1);
+			time -= 1;
+			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
+		}
+		//시간종료...
+
 
 	}
 		
@@ -127,8 +132,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 		//master initGame
 		if (currentJoinedRoom.GetField ("master").str.Equals (userName)) {
-			//StartCoroutine (SetGameTimer ());
-			SetGameTimer();
+			StartCoroutine (SetPlayTimer ());
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 		}
@@ -168,6 +172,15 @@ public class TableHockeyGameManager : MonoBehaviour {
 	public JSONObject getCurrentJoinedRoom() {
 		return this.currentJoinedRoom;
 	}
+		
+	public void SetPlayTimeView() {
+		Text txt = findChildrenTxt ("TimeText");
+		txt.text = "Time: " + time;
+	}
+
+	public void SetPlayTime(float time) {
+		this.time = time;
+	}
 
 	private Button findChildrenBtn(string name) {
 		Button[] buttons;
@@ -180,8 +193,15 @@ public class TableHockeyGameManager : MonoBehaviour {
 		return null;
 	}
 
-	public void SetPlayTime(float time) {
-		this.time = time;
+	private Text findChildrenTxt(string name) {
+		Text[] texts;
+		texts = gamePlayUI.GetComponentsInChildren<Text> ();
+
+		foreach (Text text in texts) {
+			if (text.name.Contains (name))
+				return text;
+		}
+		return null;
 	}
 
 }
