@@ -133,7 +133,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		gamePlayUI.enabled = true;
 
 		//master initGame
-		if (currentJoinedRoom.GetField ("master").Equals (userName)) {
+		if (currentJoinedRoom.GetField ("master").str.Equals (userName)) {
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 		}
