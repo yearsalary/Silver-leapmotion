@@ -175,10 +175,11 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 
 		tableHockeyGameManager.SetCurrentServerInfo (currentServerInfo);
-		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
 
-		if (roomInfo.GetField ("master").str.Equals (name))
+		if (roomInfo.GetField ("master").str.Equals (name)) {
 			tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.READY);
+			tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
+		}
 
 		Debug.Log (tableHockeyGameManager.getCurrentState ().ToString ());
 		tableHockeyGameManager.SetGameView ();
@@ -230,10 +231,10 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			});
 
 			if (joinedRoom == null) {
-
+				Debug.Log ("qweqweqweqweqweqweqeqweqe");
 				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
 				tableHockeyGameManager.SetCurrentJoinedRoom (null);
-				tableHockeyGameManager.SetGameView ();
+				tableHockeyGameManager.SetGameView ();	
 				return;
 			}
 			return;
