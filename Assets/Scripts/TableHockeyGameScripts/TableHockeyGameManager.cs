@@ -47,6 +47,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		leaveRoomBtn = findChildrenBtn (ready_dialogueCanvas, "LeaveRoomButton");
 
 		playReadyBtn.interactable = true;
+		leaveRoomBtn.interactable = true;
 		playReadyCancelBtn.interactable = false;
 	}
 		
@@ -90,14 +91,14 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 	public void PlayReady() {
 		playReadyBtn.interactable = false;
-		leaveRoomBtn = false;
+		leaveRoomBtn.interactable  = false;
 		playReadyCancelBtn.interactable = true;
 		socketIOCtrl.SendPlayReadyMSg ();
 	}
 
 	public void PlayReadyCancel() {
 		playReadyCancelBtn.interactable = false;
-		leaveRoomBtn = true;
+		leaveRoomBtn.interactable  = true;
 		playReadyBtn.interactable = true;
 		socketIOCtrl.SendPlayReadyCancelMSg ();
 	}
