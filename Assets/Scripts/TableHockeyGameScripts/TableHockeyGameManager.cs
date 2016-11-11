@@ -143,11 +143,15 @@ public class TableHockeyGameManager : MonoBehaviour {
 		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;
 		SetPlayPointView ();
+
+		//innit
+		this.setPlayerPoint (0f);
+		this.setOpponentPlayerPoint(0f);
+		this.time = 30f;
+		socketIOCtrl.ball.transform.position = new Vector3 (0f, 0f, 0f);
+
 		//master initGame
 		if (currentJoinedRoom.GetField ("master").str.Equals (socketIOCtrl.name)) {
-			this.setPlayerPoint (0f);
-			this.setOpponentPlayerPoint(0f);
-			this.time = 30f;
 			StartCoroutine (SetPlayTimer ());
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
