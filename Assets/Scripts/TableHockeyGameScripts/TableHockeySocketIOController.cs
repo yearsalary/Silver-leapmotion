@@ -115,9 +115,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	private void OnUserPlayEnded(SocketIOEvent evt) {
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayEnded ");
-
-		socket.Off("PLAY", OnUserPlay);
-		socket.Off ("PLAY_ENDED", OnUserPlayEnded);
 		socket.Off ("MOVE", OnUSerMove);
 		socket.Off ("BALL_OWNER_CHANGE", OnBallOwnerChange);
 		socket.Off ("BALL_MOVE", OnBallMove);
