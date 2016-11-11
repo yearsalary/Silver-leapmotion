@@ -53,7 +53,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (!gameManager.GetComponent<TableHockeyGameManager>().getCurrentState().Equals(TableHockeyGameManager.State.PLAY))
+		if (!tableHockeyGameManager.getCurrentState().Equals(TableHockeyGameManager.State.PLAY))
 			return;
 		
 		SendBarMoveMSg();
@@ -114,6 +114,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayEnded ");
 
+		ball.transform.position = new Vector3 (0f,0f,0f);
 		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
 		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.END);
 		tableHockeyGameManager.SetGameView ();
@@ -247,7 +248,6 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			return;
 		}
 			
-
 		//currentJoinedroom is destroyed
 		if (roomInfo == null) {
 			JSONObject joinedRoom = currentServer_rooms.Find ((v) => {
@@ -262,8 +262,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			}
 			return;
 		}
-
-
+			
 		if(tableHockeyGameManager.getCurrentJoinedRoom().GetField("title").str.Equals(roomInfo.GetField("title").str)) {
 			JSONObject attendant = roomInfo.GetField ("attendants").list.Find ((v) => {
 				return v.GetField("name").str == name;
