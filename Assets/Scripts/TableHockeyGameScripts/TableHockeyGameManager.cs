@@ -145,9 +145,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 		SetPlayPointView ();
 
 		//init
-		this.setPlayerPoint (0f);
-		this.setOpponentPlayerPoint(0f);
-		this.time = 30f;
+		playerPoint = 0f;
+		opponentPlayerPoint = 0f;
+		time = 30f;
 
 		//master initGame
 		if (currentJoinedRoom.GetField ("master").str.Equals (socketIOCtrl.name)) {
@@ -208,7 +208,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 				break;
 		case State.END:
 			EndGame ();
-			break;
+				break;
 		}
 	}
 
