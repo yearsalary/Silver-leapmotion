@@ -30,11 +30,13 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("LEFT_ROOM", OnLeftRoom);
 		socket.On ("READY_CHANGE", OnUserPlayReadyChange);
 		socket.On ("PLAY", OnUserPlay);
+		socket.On ("PLAY_ENDED", OnUserPlayEnded);
 		socket.On ("MOVE", OnUSerMove);
 		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
 		socket.On ("BALL_MOVE", OnBallMove);
 		socket.On ("PLAY_TIME_CHANGED", OnTimeChange);
 		socket.On ("PLAY_POINT_CHANGED", OnPointChange);
+
 	}
 
 	IEnumerator ConnectToServer() {
@@ -105,6 +107,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlay ");
 
 		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.PLAY);
+		tableHockeyGameManager.SetGameView ();
+	}
+
+	private void OnUserPlayEnded(SocketIOEvent evt) {
+		JSONObject roomInfo = evt.data;
+		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayEnded ");
+
+		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
+		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.END);
 		tableHockeyGameManager.SetGameView ();
 	}
 
@@ -327,6 +338,15 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.Emit ("PLAY_POINT_CHANGE", new JSONObject (data));
 	}
 
+	public void SendPlayEndMSg() {
+		JSONObject currentJoinedRoom = tableHockeyGameManager.getCurrentJoinedRoom ();
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+
+		data ["title"] = currentJoinedRoom.GetField("title").str;
+		data ["name"] = name;
+
+		socket.Emit ("PLAY_END", new JSONObject (data));
+	}
 		
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;

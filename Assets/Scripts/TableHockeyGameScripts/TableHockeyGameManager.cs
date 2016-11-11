@@ -8,10 +8,11 @@ using UnityEngine.SceneManagement;
 public class TableHockeyGameManager : MonoBehaviour {
 	public GameObject NetworkCtrl;
 	public Dropdown selectRoomDropDown;
-	public Text message;
 	public Canvas wait_dialogueCanvas;
 	public Canvas ready_dialogueCanvas;
+	public Canvas end_dialogueCanvas;
 	public Canvas gamePlayUI;
+
 
 	private TableHockeySocketIOController socketIOCtrl;
 	private State currentState;
@@ -26,7 +27,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	private float opponentPlayerPoint = 0f;
 
 	public enum State {
-		WAIT,READY,PLAY
+		WAIT,READY,PLAY,END
 	}
 
 	// Use this for initialization
@@ -35,12 +36,13 @@ public class TableHockeyGameManager : MonoBehaviour {
 		this.SetCurrentState (State.WAIT);
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
+		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
 
-		message.text = "서버 접속시도 중...";
+		findChildrenTxt(wait_dialogueCanvas, "Message").text = "서버 접속시도 중...";
 
-		playReadybtn = findChildrenBtn ("StartReadyButton");
-		playReadyCancelbtn = findChildrenBtn ("StartReadyCancelButton");
+		playReadybtn = findChildrenBtn (ready_dialogueCanvas,"StartReadyButton");
+		playReadyCancelbtn = findChildrenBtn (ready_dialogueCanvas,"StartReadyCancelButton");
 		playReadybtn.interactable = true;
 		playReadyCancelbtn.interactable = false;
 	}
@@ -49,9 +51,10 @@ public class TableHockeyGameManager : MonoBehaviour {
 		while(time>=0) {
 			yield return new WaitForSeconds (1);
 			time -= 1;
-			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().SendPlayTimeMSg (time);
+			socketIOCtrl.SendPlayTimeMSg (time);
 		}
 		//시간종료...
+		socketIOCtrl.SendPlayEndMSg();
 
 	}
 		
@@ -65,7 +68,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		});
 		selectRoomDropDown.ClearOptions ();
 		selectRoomDropDown.AddOptions (options);
-		message.text = "서버접속완료.. \n현재 접속인원: " + connectedUserCount + "명";
+		findChildrenTxt(wait_dialogueCanvas, "Message").text = "서버접속완료.. \n현재 접속인원: " + connectedUserCount + "명";
 	}
 
 	public void CreateRoom() {
@@ -98,6 +101,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		Debug.Log ("WAIT");
 		wait_dialogueCanvas.enabled = true;
 		ready_dialogueCanvas.enabled = false;
+		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
 		currentJoinedRoom = null;
 		SetServerInfo ();
@@ -107,6 +111,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		Debug.Log ("READY");
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = true;
+		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
 		string attendants = "";
 
@@ -129,15 +134,46 @@ public class TableHockeyGameManager : MonoBehaviour {
 		Debug.Log ("PLAY");
 		wait_dialogueCanvas.enabled = false;
 		ready_dialogueCanvas.enabled = false;
+		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;
 		SetPlayPointView ();
 		//master initGame
 		if (currentJoinedRoom.GetField ("master").str.Equals (socketIOCtrl.name)) {
+			this.setPlayerPoint (0f);
+			this.setOpponentPlayerPoint(0f);
 			StartCoroutine (SetPlayTimer ());
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 		}
 			
+	}
+
+	public void EndGame() {
+		Debug.Log ("END");
+		wait_dialogueCanvas.enabled = false;
+		ready_dialogueCanvas.enabled = false;
+		end_dialogueCanvas.enabled = true;
+		gamePlayUI.enabled = false;
+		string msg = "결과\n";
+
+		msg += socketIOCtrl.name +" " + playerPoint +" :";
+		msg += opponentPlayerPoint + " " + socketIOCtrl.getOtehrPlayerName ();
+		msg += "\n";
+
+		if (playerPoint > opponentPlayerPoint)
+			msg += "승리하였습니다.";
+		else if (playerPoint == opponentPlayerPoint)
+			msg += "무승부 입니다.";
+		else
+			msg += "패배하였습니다.";
+
+
+		findChildrenTxt (end_dialogueCanvas, "Message").text = msg;
+	}
+
+	public void GoBackReady() {
+		currentState = State.READY;
+		SetGameView ();
 	}
 
 	public void SetGameView() {
@@ -151,6 +187,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 		case State.PLAY:
 			PlayGame ();
 				break;
+		case State.END:
+			EndGame ();
+			break;
 		}
 	}
 
@@ -191,12 +230,12 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 		
 	public void SetPlayTimeView() {
-		Text txt = findChildrenTxt ("TimeText");
+		Text txt = findChildrenTxt (gamePlayUI,"TimeText");
 		txt.text = "Time: " + time;
 	}
 
 	public void SetPlayPointView() {
-		Text txt = findChildrenTxt ("PointText");
+		Text txt = findChildrenTxt (gamePlayUI,"PointText");
 		txt.text = socketIOCtrl.name +" " + playerPoint +" :";
 		txt.text += opponentPlayerPoint + " " + socketIOCtrl.getOtehrPlayerName ();
 	}
@@ -205,9 +244,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 		this.time = time;
 	}
 		
-	private Button findChildrenBtn(string name) {
+	private Button findChildrenBtn(Canvas canvas, string name) {
 		Button[] buttons;
-		buttons = ready_dialogueCanvas.GetComponentsInChildren<Button> ();
+		buttons = canvas.GetComponentsInChildren<Button> ();
 
 		foreach (Button btn in buttons) {
 			if (btn.name.Contains (name))
@@ -216,9 +255,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 		return null;
 	}
 
-	private Text findChildrenTxt(string name) {
+	private Text findChildrenTxt(Canvas canvas, string name) {
 		Text[] texts;
-		texts = gamePlayUI.GetComponentsInChildren<Text> ();
+		texts = canvas.GetComponentsInChildren<Text> ();
 
 		foreach (Text text in texts) {
 			if (text.name.Contains (name))
