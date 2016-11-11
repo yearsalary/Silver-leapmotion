@@ -142,11 +142,10 @@ public class TableHockeyGameManager : MonoBehaviour {
 		ready_dialogueCanvas.enabled = false;
 		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = true;
-		SetPlayPointView ();
 
 		//init
-		playerPoint = 0f;
-		opponentPlayerPoint = 0f;
+		this.setPlayerPoint(0f);
+		this.setOpponentPlayerPoint (0f);
 		time = 30f;
 
 		//master initGame
@@ -155,6 +154,8 @@ public class TableHockeyGameManager : MonoBehaviour {
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
 		}
+
+		SetPlayPointView ();
 			
 	}
 
