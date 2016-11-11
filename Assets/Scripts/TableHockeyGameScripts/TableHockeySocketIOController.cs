@@ -114,9 +114,9 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayEnded ");
 
+		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.END);
 		ball.transform.position = new Vector3 (0f,0f,0f);
 		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
-		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.END);
 		tableHockeyGameManager.SetGameView ();
 	}
 
