@@ -273,10 +273,9 @@ public class TableHockeySocketIOController: MonoBehaviour {
 			if (attendant == null) {
 				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.WAIT);
 				tableHockeyGameManager.SetCurrentJoinedRoom (null);
-			} else {
-				tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.READY);
+			} else 
 				tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
-			}
+			
 			tableHockeyGameManager.SetGameView ();
 		}
 	}
