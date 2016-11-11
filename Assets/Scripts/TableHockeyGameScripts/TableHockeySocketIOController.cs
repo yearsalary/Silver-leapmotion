@@ -115,7 +115,9 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayEnded ");
 
 		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.END);
+		ballOwner = "";
 		ball.transform.position = new Vector3 (0f,0f,0f);
+		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (new Vector3 (0f, 0f, 0f));
 		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
 		tableHockeyGameManager.SetGameView ();
 	}
