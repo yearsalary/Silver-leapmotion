@@ -29,13 +29,10 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		socket.On ("JOINED_ROOM", OnJoinedRoom);
 		socket.On ("LEFT_ROOM", OnLeftRoom);
 		socket.On ("READY_CHANGE", OnUserPlayReadyChange);
+
+		//gameplay related...
 		socket.On ("PLAY", OnUserPlay);
 		socket.On ("PLAY_ENDED", OnUserPlayEnded);
-		socket.On ("MOVE", OnUSerMove);
-		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
-		socket.On ("BALL_MOVE", OnBallMove);
-		socket.On ("PLAY_TIME_CHANGED", OnTimeChange);
-		socket.On ("PLAY_POINT_CHANGED", OnPointChange);
 
 	}
 
@@ -61,7 +58,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		if (ballOwner.Equals (name))
 			SendBallMoveMSg ();
 
-		if (Vector3.Distance (playerBar.transform.position, ball.transform.position) < 1f && !ballOwner.Equals (name) && ball.transform.position.z<0f)
+		if (ball.transform.position.z<=0f)
 			SendBallOwnerChangeMsg ();
 
 	}
@@ -105,6 +102,11 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	private void OnUserPlay(SocketIOEvent evt) {
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlay ");
+		socket.On ("MOVE", OnUSerMove);
+		socket.On ("BALL_OWNER_CHANGE", OnBallOwnerChange);
+		socket.On ("BALL_MOVE", OnBallMove);
+		socket.On ("PLAY_TIME_CHANGED", OnTimeChange);
+		socket.On ("PLAY_POINT_CHANGED", OnPointChange);
 
 		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.PLAY);
 		tableHockeyGameManager.SetGameView ();
@@ -114,10 +116,20 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		JSONObject roomInfo = evt.data;
 		Debug.Log ("Get the msg from server is: " + evt.data + " OnUserPlayEnded ");
 
+		socket.Off("PLAY", OnUserPlay);
+		socket.Off ("PLAY_ENDED", OnUserPlayEnded);
+		socket.Off ("MOVE", OnUSerMove);
+		socket.Off ("BALL_OWNER_CHANGE", OnBallOwnerChange);
+		socket.Off ("BALL_MOVE", OnBallMove);
+		socket.Off ("PLAY_TIME_CHANGED", OnTimeChange);
+		socket.Off ("PLAY_POINT_CHANGED", OnPointChange);
+
+
 		tableHockeyGameManager.SetCurrentState (TableHockeyGameManager.State.END);
 		ballOwner = "";
 		ball.transform.position = new Vector3 (0f,0f,0f);
-		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (new Vector3 (0f, 0f, 0f));
+		ball.GetComponent<TableHockeyBall> ().SetMoveDirection (Vector3.zero);
+
 		tableHockeyGameManager.SetCurrentJoinedRoom (roomInfo);
 		tableHockeyGameManager.SetGameView ();
 	}

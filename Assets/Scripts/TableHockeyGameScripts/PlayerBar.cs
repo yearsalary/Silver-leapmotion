@@ -49,7 +49,6 @@ public class PlayerBar : MonoBehaviour {
 		Vector3 reflectedVector;
 
 		if (col.gameObject.Equals (ball)) {
-			netWorkCtrl.GetComponent<TableHockeySocketIOController> ().SendBallOwnerChangeMsg ();
 			if(ball.GetComponent<TableHockeyBall>().getMoveDirection() == Vector3.zero)
 				reflectedVector = Vector3.Reflect (col.contacts [0].point, col.contacts [0].normal.normalized);
 			else
