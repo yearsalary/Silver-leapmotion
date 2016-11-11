@@ -19,8 +19,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 	private JSONObject currentServerInfo;
 	private JSONObject currentJoinedRoom;
 
-	private Button playReadybtn;
-	private Button playReadyCancelbtn;
+	private Button playReadyBtn;
+	private Button playReadyCancelBtn;
+	private Button leaveRoomBtn;
 
 	private float time = 30f;
 	private float playerPoint = 0f;
@@ -41,10 +42,12 @@ public class TableHockeyGameManager : MonoBehaviour {
 
 		findChildrenTxt(wait_dialogueCanvas, "Message").text = "서버 접속시도 중...";
 
-		playReadybtn = findChildrenBtn (ready_dialogueCanvas,"StartReadyButton");
-		playReadyCancelbtn = findChildrenBtn (ready_dialogueCanvas,"StartReadyCancelButton");
-		playReadybtn.interactable = true;
-		playReadyCancelbtn.interactable = false;
+		playReadyBtn = findChildrenBtn (ready_dialogueCanvas,"StartReadyButton");
+		playReadyCancelBtn = findChildrenBtn (ready_dialogueCanvas,"StartReadyCancelButton");
+		leaveRoomBtn = findChildrenBtn (ready_dialogueCanvas, "LeaveRoomButton");
+
+		playReadyBtn.interactable = true;
+		playReadyCancelBtn.interactable = false;
 	}
 		
 	private IEnumerator SetPlayTimer() {
@@ -86,14 +89,16 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void PlayReady() {
-		playReadybtn.interactable = false;
-		playReadyCancelbtn.interactable = true;
+		playReadyBtn.interactable = false;
+		leaveRoomBtn = false;
+		playReadyCancelBtn.interactable = true;
 		socketIOCtrl.SendPlayReadyMSg ();
 	}
 
 	public void PlayReadyCancel() {
-		playReadyCancelbtn.interactable = false;
-		playReadybtn.interactable = true;
+		playReadyCancelBtn.interactable = false;
+		leaveRoomBtn = true;
+		playReadyBtn.interactable = true;
 		socketIOCtrl.SendPlayReadyCancelMSg ();
 	}
 		
@@ -141,6 +146,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 		if (currentJoinedRoom.GetField ("master").str.Equals (socketIOCtrl.name)) {
 			this.setPlayerPoint (0f);
 			this.setOpponentPlayerPoint(0f);
+			this.time = 30f;
 			StartCoroutine (SetPlayTimer ());
 			NetworkCtrl.GetComponent<TableHockeySocketIOController>().SendBallOwnerChangeMsg ();
 			NetworkCtrl.GetComponent<TableHockeySocketIOController> ().ball.transform.position = new Vector3 (0f, 0f, -4.5f);
@@ -178,8 +184,9 @@ public class TableHockeyGameManager : MonoBehaviour {
 	}
 
 	public void GoBackReady() {
-		playReadyCancelbtn.interactable = false;
-		playReadybtn.interactable = true;
+		playReadyBtn.interactable = true;
+		leaveRoomBtn.interactable = true;
+		playReadyCancelBtn.interactable = false;
 		currentState = State.READY;
 		SetGameView ();
 	}
