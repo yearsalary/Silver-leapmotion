@@ -16,11 +16,13 @@ public class ReflectionPlane : MonoBehaviour {
 		if (col.gameObject.Equals (ball) && isFirstColEnter) {
 			if (gameObject.tag.Equals ("TableHockeyGoal"))
 				socketIOCtrl.SendPointInfoMSg ();
-			//if (gameObject.tag.Equals ("TableHockeyGoal"))
-			Vector3 reflectedVector = Vector3.Reflect (ball.GetComponent<TableHockeyBall>().getMoveDirection(),col.contacts [0].normal.normalized);
-			//Debug.Log (reflectedVector.ToString ());
-			reflectedVector.Set (reflectedVector.x,0f,reflectedVector.z);
-			ball.GetComponent<TableHockeyBall> ().SetMoveDirection (reflectedVector);
+			
+			if (socketIOCtrl.isBallOwner ()) {
+				Vector3 reflectedVector = Vector3.Reflect (ball.GetComponent<TableHockeyBall> ().getMoveDirection (), col.contacts [0].normal.normalized);
+				//Debug.Log (reflectedVector.ToString ());
+				reflectedVector.Set (reflectedVector.x, 0f, reflectedVector.z);
+				ball.GetComponent<TableHockeyBall> ().SetMoveDirection (reflectedVector);
+			}
 			isFirstColEnter = false;
 		}
 	}
