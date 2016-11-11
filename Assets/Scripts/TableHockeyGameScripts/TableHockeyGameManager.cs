@@ -171,7 +171,15 @@ public class TableHockeyGameManager : MonoBehaviour {
 		findChildrenTxt (end_dialogueCanvas, "Message").text = msg;
 	}
 
+	public void ExitGame() {
+		Debug.Log("EXIT");
+		socketIOCtrl.SendPlayExitMSg();
+		SceneManager.LoadScene("MainMenuScene");
+	}
+
 	public void GoBackReady() {
+		playReadyCancelbtn.interactable = false;
+		playReadybtn.interactable = true;
 		currentState = State.READY;
 		SetGameView ();
 	}

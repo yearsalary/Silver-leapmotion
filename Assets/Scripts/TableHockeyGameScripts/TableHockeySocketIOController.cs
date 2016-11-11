@@ -347,6 +347,13 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 		socket.Emit ("PLAY_END", new JSONObject (data));
 	}
+
+	public void SendPlayExitMSg() {
+		Dictionary<string, string> data = new Dictionary<string, string> ();
+		data ["name"] = name;
+
+		socket.Emit ("disconnect", new JSONObject (data));
+	}
 		
 	Vector3 JsonToVector3(string target) {
 		Vector3 newVector;
