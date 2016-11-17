@@ -12,4 +12,8 @@ public class AssistantModel {
 		this.name = name;
 		this.traineeList = traineeList;
 	}
+
+    public AssistantModel(List<TraineeModel> traineeList) {
+		this.traineeList = traineeList;
+	}
 }

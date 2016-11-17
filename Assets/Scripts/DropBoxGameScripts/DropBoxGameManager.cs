@@ -4,6 +4,31 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Diagnostics;
 using UnityEngine.UI;
+using System;
+using System.Text;
+using LitJson;
+
+class PlayRecordData
+{
+    public string trainee_id;
+    public string assistant_id;
+    public string contents_name;
+    public string level;
+    public string totalScore;
+    public string startTime;
+    public string endTime;
+
+    /*public PlayRecordData(string traineeId, string assistantId, string contentName, string startTime, string endTime, string level, string totalScore)
+    {
+        this.trainee_id = traineeId;
+        this.assistant_id = assistantId;
+        this.contents_name = contentName;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.level = level;
+        this.totalScore = totalScore;
+    }*/
+}
 
 public class DropBoxGameManager : MonoBehaviour
 {
@@ -13,8 +38,12 @@ public class DropBoxGameManager : MonoBehaviour
     public int cubeCount;
     public int point;
     public int totalPoint;
-    public bool isStopGame;
+    bool isStopGame;
     public float time;
+    string contentsName;
+    string cookie;
+    string startTime;
+    string endTime;
 
     public Canvas dialogueCanvas;
     public Canvas gamePlayUI;
@@ -28,6 +57,8 @@ public class DropBoxGameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        contentsName = "dropbox";
         cubeCount = 1;
         dialogueMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
         dialogueCanvas.enabled = true;
@@ -51,7 +82,7 @@ public class DropBoxGameManager : MonoBehaviour
         point = 0;
         dropBoxList = new List<GameObject>();
         time = 120f;
-        MakeCube(cubeCount + 1);
+        MakeCube(cubeCount);
         levelText.text = "Level: " + cubeCount;
         pointText.text = "Point : " + point;
         isStopGame = false;
@@ -95,7 +126,6 @@ public class DropBoxGameManager : MonoBehaviour
     void FinishGame(bool isSucceed)
     {
         isStopGame = true;
-
         foreach (GameObject cube in dropBoxList)
             Destroy(cube);
         dropBoxList.Clear();
@@ -151,12 +181,56 @@ public class DropBoxGameManager : MonoBehaviour
     public void OnPlayEndButton()
     {
         //게임 기록 데이터 정리 및 전송..
+        endTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-        SceneManager.LoadScene("MainMenuScene");
+        string cubeCount = this.cubeCount.ToString();
+        string totalPoint = this.totalPoint.ToString();
+
+        //GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, this.contentName, this.startTime, this.endTime, cubeCount, totalPoint
+        var data = new PlayRecordData();
+
+        data.trainee_id = GameStatusModel.trainee.getId();
+        data.assistant_id = GameStatusModel.assistant.id;
+        data.contents_name = this.contentsName;
+        data.level = cubeCount;
+        data.totalScore = totalPoint;
+        data.startTime = this.startTime;
+        data.endTime = this.endTime;
+        //data.level = cubeCount;
+        //data.totalScore = totalPoint;
+
+        //UnityEngine.Debug.Log(JsonUtility.ToJson(data, true));
+
+        var webAddr = "http://117.17.158.201:8080/vrain/client/record";
+
+        WWWForm form = new WWWForm();
+
+        form.AddField("result", JsonUtility.ToJson(data, true));
+
+        UnityEngine.Debug.Log(JsonUtility.ToJson(data, true).ToString());
+
+        WWW www = new WWW(webAddr, form);
+        StartCoroutine(WaitForRequest(www));
     }
 
     public void OnGameStopButton()
     {
         FinishGame(false);
+    }
+
+    private IEnumerator WaitForRequest(WWW www)
+    {
+        yield return www;
+
+        // check for errors
+        if (www.error == null)
+        {
+            UnityEngine.Debug.Log("WWW ok: " + www.text);
+        }
+        else
+        {
+            //로그인 실패
+            UnityEngine.Debug.Log("WWW Error: " + www.error);
+        }
     }
 }

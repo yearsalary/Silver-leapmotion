@@ -12,6 +12,7 @@ public class Aim : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         v = GameObject.Find("LRigidHand(Clone)").GetComponentsInChildren<Transform>();
+
         foreach (Transform child in v)
         {
             if (child.name.Contains("palm"))

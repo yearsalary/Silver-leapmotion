@@ -2,11 +2,21 @@
 using System.Collections;
 
 public class TraineeModel {
-	public string id;
-	public string name;
+	private string id;
+	private string name;
 
 	public TraineeModel(string id, string name) {
 		this.id = id;
 		this.name = name;
 	}
+
+    public string getId()
+    {
+        return id;
+    }
+
+    public string getName()
+    {
+        return name;
+    }
 }
