@@ -8,7 +8,6 @@ public class StartGameManager : MonoBehaviour{
 
 	public void StartGame() {
 		string selectedGame = dropDwon.captionText.text;
-		
 		SceneManager.LoadScene(selectedGame+"Scene");
 	}
 

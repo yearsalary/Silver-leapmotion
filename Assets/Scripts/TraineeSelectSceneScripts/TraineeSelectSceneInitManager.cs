@@ -12,10 +12,9 @@ public class TraineeSelectSceneInitManager : MonoBehaviour {
 	void Start () {
 		List<string> options = new List<string> ();
 
-		foreach (TraineeModel trainee in GameStatusModel.assistant.traineeList) {
-			Debug.Log ("훈련자:" + trainee.getName());
+		foreach (TraineeModel trainee in GameStatusModel.assistant.traineeList)
 			options.Add (trainee.getName());
-		}
+		
 
 		systemMessage.text = GameStatusModel.assistant.name + " 도우미님 환영합니다.";
 
