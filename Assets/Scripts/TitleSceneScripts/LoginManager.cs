@@ -35,7 +35,7 @@ public class LoginManager : MonoBehaviour {
         
         //서버에게 Json을 넘겨주고 쿠키값 받아오는거
         var data = new LoginData();
-        var webAddr = "http://117.17.158.201:8080/vrain/client/login";
+        var webAddr = "http://117.17.158.66:8080/vrain/client/login";
         //var sessionID = "";
         
         data.id = id;
@@ -64,12 +64,13 @@ public class LoginManager : MonoBehaviour {
             //디코딩 해주는 부분
             UTF8Encoding encoder = new UTF8Encoding();
             Decoder utf8Decode = encoder.GetDecoder();
-
+            /*
             byte[] todecode_byte = Convert.FromBase64String(www.text);
             char[] decoded_char = new char[utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length)];
             utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
             string result = new String(decoded_char);
-            
+            */
+            string result = Encoding.UTF8.GetString(Convert.FromBase64String(www.text));
             //string을 제이슨으로 바꿔서 제이슨을 트레이니리스트에 넣어주는 부분
             JsonData json = JsonMapper.ToObject(result);
 

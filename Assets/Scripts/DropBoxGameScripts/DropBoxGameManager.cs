@@ -18,16 +18,7 @@ class PlayRecordData
     public string startTime;
     public string endTime;
 
-    /*public PlayRecordData(string traineeId, string assistantId, string contentName, string startTime, string endTime, string level, string totalScore)
-    {
-        this.trainee_id = traineeId;
-        this.assistant_id = assistantId;
-        this.contents_name = contentName;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.level = level;
-        this.totalScore = totalScore;
-    }*/
+
 }
 
 public class DropBoxGameManager : MonoBehaviour
@@ -58,7 +49,7 @@ public class DropBoxGameManager : MonoBehaviour
     void Start()
     {
         startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        contentsName = "dropbox";
+        contentsName = "블록 분류 게임";
         cubeCount = 1;
         dialogueMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
         dialogueCanvas.enabled = true;
@@ -186,7 +177,6 @@ public class DropBoxGameManager : MonoBehaviour
         string cubeCount = this.cubeCount.ToString();
         string totalPoint = this.totalPoint.ToString();
 
-        //GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, this.contentName, this.startTime, this.endTime, cubeCount, totalPoint
         var data = new PlayRecordData();
 
         data.trainee_id = GameStatusModel.trainee.getId();
@@ -196,21 +186,16 @@ public class DropBoxGameManager : MonoBehaviour
         data.totalScore = totalPoint;
         data.startTime = this.startTime;
         data.endTime = this.endTime;
-        //data.level = cubeCount;
-        //data.totalScore = totalPoint;
 
-        //UnityEngine.Debug.Log(JsonUtility.ToJson(data, true));
-
-        var webAddr = "http://117.17.158.201:8080/vrain/client/record";
+        var webAddr = "http://117.17.158.66:8080/vrain/client/record";
 
         WWWForm form = new WWWForm();
-
-        form.AddField("result", JsonUtility.ToJson(data, true));
-
-        UnityEngine.Debug.Log(JsonUtility.ToJson(data, true).ToString());
+        
+        form.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data, true))));
 
         WWW www = new WWW(webAddr, form);
         StartCoroutine(WaitForRequest(www));
+
     }
 
     public void OnGameStopButton()
@@ -225,7 +210,7 @@ public class DropBoxGameManager : MonoBehaviour
         // check for errors
         if (www.error == null)
         {
-            UnityEngine.Debug.Log("WWW ok: " + www.text);
+            SceneManager.LoadScene("MainMenuScene");
         }
         else
         {
