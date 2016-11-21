@@ -14,8 +14,8 @@ public class DropBoxGameManager : MonoBehaviour
     public GameObject cube;
 
     public int cubeCount;
-    public int point;
-    public int totalPoint;
+    public int score;
+    public int totalScore;
     bool isStopGame;
     public float time;
     string contentsName;
@@ -57,12 +57,12 @@ public class DropBoxGameManager : MonoBehaviour
 
     void InitGame()
     {
-        point = 0;
+        score = 0;
         dropBoxList = new List<GameObject>();
         time = 120f;
         MakeCube(cubeCount);
         levelText.text = "Level: " + cubeCount;
-        pointText.text = "Point : " + point;
+        pointText.text = "Score : " + score;
         isStopGame = false;
     }
 
@@ -88,9 +88,9 @@ public class DropBoxGameManager : MonoBehaviour
             if (dropBoxList[i] == null)
             {
                 dropBoxList.RemoveAt(i);
-                point += 10;
-                totalPoint += point;
-                pointText.text = "Point : "+point;
+                score += 10;
+                totalScore += score;
+                pointText.text = "Score : "+ score;
             }
         }
 
@@ -162,11 +162,12 @@ public class DropBoxGameManager : MonoBehaviour
         endTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
         string cubeCount = this.cubeCount.ToString();
-        string totalPoint = this.totalPoint.ToString();
+        string totalScore = this.totalScore.ToString();
 
 		PlayRecordData data = new PlayRecordData(GameStatusModel.trainee.getId(),GameStatusModel.assistant.id,
-												this.contentsName, cubeCount, totalPoint, this.startTime, this.endTime);
+												this.contentsName, cubeCount, totalScore, this.startTime, this.endTime);
 
+        
 		PlayRecordDataServiceManager.SendPlayRecordData (data);
 		
     }
