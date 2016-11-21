@@ -8,7 +8,7 @@ using System;
 using System.Text;
 using LitJson;
 
-class PlayRecordData
+/*class PlayRecordData
 {
     public string trainee_id;
     public string assistant_id;
@@ -19,7 +19,7 @@ class PlayRecordData
     public string endTime;
 
 
-}
+}*/
 
 public class DropBoxGameManager : MonoBehaviour
 {
