@@ -15,13 +15,10 @@ public class TraineeSelectSceneInitManager : MonoBehaviour {
 		foreach (TraineeModel trainee in GameStatusModel.assistant.traineeList)
 			options.Add (trainee.getName());
 		
-
 		systemMessage.text = GameStatusModel.assistant.name + " 도우미님 환영합니다.";
 
 		selectTraineeDropDown.ClearOptions ();
 		selectTraineeDropDown.AddOptions (options);
-
-        
 
 	}
 

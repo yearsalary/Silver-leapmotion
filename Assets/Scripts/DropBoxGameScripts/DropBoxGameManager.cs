@@ -177,45 +177,15 @@ public class DropBoxGameManager : MonoBehaviour
         string cubeCount = this.cubeCount.ToString();
         string totalPoint = this.totalPoint.ToString();
 
-        var data = new PlayRecordData();
+		PlayRecordData data = new PlayRecordData(GameStatusModel.trainee.getId(),GameStatusModel.assistant.id,
+												this.contentsName, cubeCount, totalPoint, this.startTime, this.endTime);
 
-        data.trainee_id = GameStatusModel.trainee.getId();
-        data.assistant_id = GameStatusModel.assistant.id;
-        data.contents_name = this.contentsName;
-        data.level = cubeCount;
-        data.totalScore = totalPoint;
-        data.startTime = this.startTime;
-        data.endTime = this.endTime;
-
-        var webAddr = "http://117.17.158.66:8080/vrain/client/record";
-
-        WWWForm form = new WWWForm();
-        
-        form.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data, true))));
-
-        WWW www = new WWW(webAddr, form);
-        StartCoroutine(WaitForRequest(www));
-
+		PlayRecordDataServiceManager.SendPlayRecordData (data);
+		
     }
 
-    public void OnGameStopButton()
-    {
+    public void OnGameStopButton() {
         FinishGame(false);
     }
 
-    private IEnumerator WaitForRequest(WWW www)
-    {
-        yield return www;
-
-        // check for errors
-        if (www.error == null)
-        {
-            SceneManager.LoadScene("MainMenuScene");
-        }
-        else
-        {
-            //로그인 실패
-            UnityEngine.Debug.Log("WWW Error: " + www.error);
-        }
-    }
 }
