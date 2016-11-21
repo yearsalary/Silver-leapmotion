@@ -167,9 +167,12 @@ public class DropBoxGameManager : MonoBehaviour
 		PlayRecordData data = new PlayRecordData(GameStatusModel.trainee.getId(),GameStatusModel.assistant.id,
 												this.contentsName, cubeCount, totalScore, this.startTime, this.endTime);
 
-        
-		PlayRecordDataServiceManager.SendPlayRecordData (data);
-		
+        if(score != 0)
+        {
+            PlayRecordDataServiceManager.SendPlayRecordData(data);
+        }
+
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void OnGameStopButton() {
