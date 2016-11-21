@@ -24,6 +24,8 @@ public class LoginManager : MonoBehaviour {
 	public GameObject PW_inputText;
     public AssistantModel assistantmodel;
     public string cookie = "";
+	public Text ServerMsg;
+
 
     string id;
 	string pw;
@@ -96,6 +98,12 @@ public class LoginManager : MonoBehaviour {
         {
             //로그인 실패
             Debug.Log("WWW Error: " + www.error);
+			ServerMsg.text = "아이디 혹은 비밀번호가 잘못되었습니다.";
+			ServerMsg.enabled = true;
         }
     }
+
+	public void ChangedInputValue() {
+		ServerMsg.enabled = false;
+	}
 }

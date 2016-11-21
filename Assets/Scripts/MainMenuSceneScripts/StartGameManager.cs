@@ -11,4 +11,8 @@ public class StartGameManager : MonoBehaviour{
 		
 		SceneManager.LoadScene(selectedGame+"Scene");
 	}
+
+	public void GotoBackScene() {
+		SceneManager.LoadScene ("TraineeSelectScene");
+	}
 }
