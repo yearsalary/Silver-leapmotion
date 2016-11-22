@@ -1,12 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using System.Diagnostics;
 using UnityEngine.UI;
 using System;
-using System.Text;
-using LitJson;
 
 public class DropBoxGameManager : MonoBehaviour
 {
@@ -25,7 +21,7 @@ public class DropBoxGameManager : MonoBehaviour
 
     public Canvas dialogueCanvas;
     public Canvas gamePlayUI;
-
+   
     public Text levelText;
     public Text timeText;
     public Text pointText;
@@ -38,7 +34,7 @@ public class DropBoxGameManager : MonoBehaviour
         startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         contentsName = "블록 분류 게임";
         cubeCount = 1;
-        dialogueMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
+        //dialogueMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
         dialogueCanvas.enabled = true;
         gamePlayUI.enabled = false;
         isStopGame = true;
@@ -111,13 +107,14 @@ public class DropBoxGameManager : MonoBehaviour
         dialogueMessage.text = "";
         if (isSucceed)
         {
-            dialogueMessage.text += cubeCount + "레벨을 성공하였습니다.\n 다음 레벨을 플레이 해보세요.";
+            GameObject.Find("DialogueCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
+            dialogueMessage.text = score.ToString();
             cubeCount++;
-            //MakeCube(cubeCount);
         }
         else
-        {
-            dialogueMessage.text += cubeCount + "레벨을 실패하였습니다.\n 다시 플레이 해보세요.";
+        { 
+            GameObject.Find("DialogueCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
+            dialogueMessage.text = score.ToString();
         }
         dialogueCanvas.enabled = true;
         gamePlayUI.enabled = false;

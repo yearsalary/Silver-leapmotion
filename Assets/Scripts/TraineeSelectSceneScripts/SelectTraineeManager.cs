@@ -10,7 +10,7 @@ public class SelectTraineeManager : MonoBehaviour {
 		string selectedTraineeName = dropDownBox.captionText.text;
 		
 		GameStatusModel.trainee = GameStatusModel.assistant.traineeList.Find (e => e.getName().Equals (selectedTraineeName));
-		SceneManager.LoadScene ("MainMenuScene");
+		SceneManager.LoadScene ("MainMenuScene2");
 	}
 
 }

@@ -37,7 +37,7 @@ public class LoginManager : MonoBehaviour {
         
         //서버에게 Json을 넘겨주고 쿠키값 받아오는거
         var data = new LoginData();
-        var webAddr = "http://117.17.158.66:8080/vrain/client/login";
+        var webAddr = "http://117.17.158.201:8080/vrain/client/login";
         //var sessionID = "";
         
         data.id = id;

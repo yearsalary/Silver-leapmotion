@@ -10,7 +10,6 @@ public class MainMenuSceneInitManager : MonoBehaviour {
 	private List<ContentModel> gameContentList;
 	string gameMode;
 
-
 	void Start () {
 		List<string> options = new List<string> ();
 		gameContentList = new List<ContentModel> ();
