@@ -185,7 +185,7 @@ public class TableHockeyGameManager : MonoBehaviour {
 	public void ExitGame() {
 		Debug.Log("EXIT");
 		socketIOCtrl.SendPlayExitMSg();
-		SceneManager.LoadScene("MainMenuScene");
+		SceneManager.LoadScene("MainMenuScene2");
 	}
 
 	public void GoBackReady() {

@@ -25,7 +25,8 @@ public class DropBoxGameManager : MonoBehaviour
     public Text levelText;
     public Text timeText;
     public Text pointText;
-    public Text dialogueMessage;
+    public Text scoreMessage;
+    public Text dialogMessage;
     public List<GameObject> dropBoxList;
 
     // Use this for initialization
@@ -34,7 +35,7 @@ public class DropBoxGameManager : MonoBehaviour
         startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         contentsName = "블록 분류 게임";
         cubeCount = 1;
-        //dialogueMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
+        dialogMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
         dialogueCanvas.enabled = true;
         gamePlayUI.enabled = false;
         isStopGame = true;
@@ -104,18 +105,21 @@ public class DropBoxGameManager : MonoBehaviour
             Destroy(cube);
         dropBoxList.Clear();
 
-        dialogueMessage.text = "";
+        dialogMessage.text = "";
+        scoreMessage.text = "";
+
         if (isSucceed)
         {
             GameObject.Find("DialogueCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
-            dialogueMessage.text = score.ToString();
+            scoreMessage.text = score.ToString();
             cubeCount++;
         }
         else
         { 
             GameObject.Find("DialogueCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
-            dialogueMessage.text = score.ToString();
+            scoreMessage.text = score.ToString();
         }
+
         dialogueCanvas.enabled = true;
         gamePlayUI.enabled = false;
     }
@@ -169,7 +173,7 @@ public class DropBoxGameManager : MonoBehaviour
             PlayRecordDataServiceManager.SendPlayRecordData(data);
         }
 
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene("MainMenuScene2");
     }
 
     public void OnGameStopButton() {

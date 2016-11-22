@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class ChangeImage : MonoBehaviour {
-    public SpriteRenderer gameEndImage;
+    //public SpriteRenderer gameEndImage;
     public Sprite[] sprites;
     //public bool isSucced;
 

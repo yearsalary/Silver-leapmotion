@@ -16,9 +16,12 @@ public class StackBoxGameManager : MonoBehaviour {
 	List<GameObject> stackBoxList;
 	public Canvas dialogueCanvas;
 	public Canvas gamePlayUI;
-	public Text dialogueMessage;
 
-	private int level;
+	public Text dialogMessage;
+    public Text scoreMessage;
+
+
+    private int level;
 	private float time;
 	private int score;
 	private bool isStopGame;
@@ -34,7 +37,7 @@ public class StackBoxGameManager : MonoBehaviour {
 		level = 1;
 		score = 0;
 
-		dialogueMessage.text = "시작\n *스택박스게임은 탑을 쌓고 손을 모두 치워야 결과를 확인합니다.";
+        dialogMessage.text = "시작\n *스택박스게임은 탑을 쌓고 손을 모두 치워야 결과를 확인합니다.";
 		dialogueCanvas.enabled = true;
 		gamePlayUI.enabled = false;
 		isStopGame = true;
@@ -120,14 +123,23 @@ public class StackBoxGameManager : MonoBehaviour {
 			Destroy (box);
 		stackBoxList.Clear ();
 
-		dialogueMessage.text = "";
-		if (isSucceed) {
-			dialogueMessage.text += level + "레벨을 성공하였습니다.\n 다음 레벨을 플레이 해보세요.";
-			level++;
-		} else {
-			dialogueMessage.text += level + "레벨을 실패하였습니다.\n 다시 플레이 해보세요.";
-		}
-		this.score = level * 10;
+        dialogMessage.text = "";
+        scoreMessage.text = "";
+
+        if (isSucceed)
+        {
+            GameObject.Find("DialogCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
+            //scoreMessage.text = score.ToString();
+            level++;
+        }
+        else
+        {
+            GameObject.Find("DialogCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
+            //scoreMessage.text = score.ToString();
+        }
+
+        this.score = level * 10;
+
 		dialogueCanvas.enabled = true;
 		gamePlayUI.enabled = false;
 	}
@@ -147,7 +159,7 @@ public class StackBoxGameManager : MonoBehaviour {
 
 			PlayRecordDataServiceManager.SendPlayRecordData (data);
 		}
-		SceneManager.LoadScene("MainMenuScene");
+		SceneManager.LoadScene("MainMenuScene2");
 	}
 
 	public void OnGameStopButton() {
