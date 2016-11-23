@@ -20,7 +20,6 @@ public class StackBoxGameManager : MonoBehaviour {
 	public Text dialogMessage;
     public Text scoreMessage;
 
-
     private int level;
 	private float time;
 	private int score;
@@ -123,23 +122,15 @@ public class StackBoxGameManager : MonoBehaviour {
 			Destroy (box);
 		stackBoxList.Clear ();
 
-        dialogMessage.text = "";
-        scoreMessage.text = "";
+		if (isSucceed) {
+			level++;
+			this.score = level * 10;
+		}
+	
+		dialogMessage.text = "";
+		scoreMessage.text = this.score.ToString();
 
-        if (isSucceed)
-        {
-            GameObject.Find("DialogCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
-            //scoreMessage.text = score.ToString();
-            level++;
-        }
-        else
-        {
-            GameObject.Find("DialogCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
-            //scoreMessage.text = score.ToString();
-        }
-
-        this.score = level * 10;
-
+		GameObject.Find("DialogCanvas").GetComponentInChildren<ChangeImage>().changeImage(isSucceed);
 		dialogueCanvas.enabled = true;
 		gamePlayUI.enabled = false;
 	}
