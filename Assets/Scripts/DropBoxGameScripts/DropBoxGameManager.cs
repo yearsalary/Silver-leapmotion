@@ -165,14 +165,14 @@ public class DropBoxGameManager : MonoBehaviour
         string cubeCount = this.cubeCount.ToString();
         string totalScore = this.totalScore.ToString();
 
-		PlayRecordData data = new PlayRecordData(GameStatusModel.trainee.getId(),GameStatusModel.assistant.id,
-												this.contentsName, cubeCount, totalScore, this.startTime, this.endTime);
-
-        if(score != 0)
+        if (score != 0)
         {
+            PlayRecordData data = new PlayRecordData(GameStatusModel.trainee.getId(), GameStatusModel.assistant.id,
+                                                this.contentsName, cubeCount, totalScore, this.startTime, this.endTime);
+
             PlayRecordDataServiceManager.SendPlayRecordData(data);
         }
-
+        
         SceneManager.LoadScene("MainMenuScene2");
     }
 
