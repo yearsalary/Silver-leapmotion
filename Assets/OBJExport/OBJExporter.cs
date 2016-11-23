@@ -110,7 +110,7 @@ public class OBJExporter : ScriptableWizard
         end:;
     }
 
-    void Export(string exportPath)
+    public void Export(string exportPath)
     {
         //init stuff
         Dictionary<string, bool> materialCache = new Dictionary<string, bool>();
