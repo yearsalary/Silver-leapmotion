@@ -61,9 +61,6 @@ public class OBJExportManager : MonoBehaviour {
 		lastExportFolder = exportFileInfo.Directory.FullName;
 		string baseFileName = System.IO.Path.GetFileNameWithoutExtension(exportPath);
 
-
-
-
 		//get list of required export things
 		MeshFilter[] sceneMeshes;
 		if (onlySelectedObjects)
