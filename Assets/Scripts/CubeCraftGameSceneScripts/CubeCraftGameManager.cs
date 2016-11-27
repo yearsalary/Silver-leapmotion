@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class CubeCraftGameManager : MonoBehaviour {
@@ -7,21 +8,12 @@ public class CubeCraftGameManager : MonoBehaviour {
 	public GameObject cube;
 	public GameObject parentObject;
 	public Text progressText;
-
-	public Material red_mlt;
-	public Material blue_mlt;
-	public Material green_mlt;
-	public Material wood_mlt;
+	public Material[] color_mtls;
 
 	bool isChangingColor= false;
 	int currentCubeColorIndx = 0;
 	int cubeId = 0;
 
-	Color[] cubeColors = {
-		Color.red,
-		Color.blue,
-		Color.green
-	};
 		
 	void Update() {
 		CreateCube ();
@@ -43,9 +35,8 @@ public class CubeCraftGameManager : MonoBehaviour {
 			if (childTransform.name.Contains ("palm") && grabbingHand.GetPinchState ().Equals (GrabbingHand.PinchState.kPinched)) {
 				childObj = (GameObject)Instantiate (cube, childTransform.position, Quaternion.LookRotation(Vector3.forward));		
 				childObj.transform.parent = parentObject.transform;
-				childObj.GetComponent<Renderer> ().material = red_mlt;
+				childObj.GetComponent<Renderer> ().material = color_mtls[currentCubeColorIndx];
 
-				childObj.GetComponent<Renderer> ().material.color = cubeColors [currentCubeColorIndx];
 				childObj.name += cubeId;
 				cubeId++;
 			}
@@ -67,14 +58,12 @@ public class CubeCraftGameManager : MonoBehaviour {
 				if (childTransform.name.Contains ("palm")) {
 					//Debug.Log (childTransform.rotation.z);
 					if (!isChangingColor && 0.95 <= childTransform.rotation.z) {
-						Debug.Log ("aaa");
-						if (currentCubeColorIndx != cubeColors.Length - 1)
+						if (currentCubeColorIndx != color_mtls.Length - 1)
 							currentCubeColorIndx++;
 						else
 							currentCubeColorIndx = 0;
 						isChangingColor = true;
 					} else if (isChangingColor && 0.1 >= childTransform.rotation.z) {
-						Debug.Log ("bbb");
 						isChangingColor = false;
 					}
 				}
