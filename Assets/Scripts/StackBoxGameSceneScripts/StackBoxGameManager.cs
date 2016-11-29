@@ -32,7 +32,7 @@ public class StackBoxGameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		startTime = DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss");
-		contentsName = "블록 쌓기 게임";
+		contentsName = "스택 박스 게임";
 		level = 1;
 		score = 0;
 

@@ -33,7 +33,7 @@ public class DropBoxGameManager : MonoBehaviour
     void Start()
     {
         startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        contentsName = "블록 분류 게임";
+        contentsName = "드랍 박스 게임";
         cubeCount = 1;
         dialogMessage.text = "시작\n 큐브를 같은 색깔 박스에 넣어주시기 바랍니다.\n";
         dialogueCanvas.enabled = true;
