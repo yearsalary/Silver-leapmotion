@@ -17,8 +17,6 @@ public class BoxManager : MonoBehaviour
             if (other.GetComponentInParent<Renderer>().material.color == GetComponentInParent<Renderer>().material.color)
             {
                 Destroy(other.gameObject);
-                
-                
             }
         }
         
