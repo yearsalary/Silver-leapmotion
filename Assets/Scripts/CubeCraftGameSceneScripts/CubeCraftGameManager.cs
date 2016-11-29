@@ -9,6 +9,8 @@ public class CubeCraftGameManager : MonoBehaviour {
 	public GameObject parentObject;
 	public Text progressText;
 	public Material[] color_mtls;
+	public float createCubeDistance;
+
 
 	bool isChangingColor= false;
 	int currentCubeColorIndx = 0;
@@ -18,6 +20,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 	void Update() {
 		CreateCube ();
 		ChangeColor ();
+		RotateCube ();
 	}
 
 	void CreateCube() {
@@ -45,14 +48,31 @@ public class CubeCraftGameManager : MonoBehaviour {
 	}
 
 	void RotateCube() {
+		GameObject leftRigidHand = GameObject.Find ("LRigidHand(Clone)");
+		GrabbingHand grabbingHand;
+		Transform[] transformArray;
+
+		if (leftRigidHand == null)
+			return;
+
+
+		grabbingHand = leftRigidHand .GetComponentInChildren<GrabbingHand> ();
+		transformArray = leftRigidHand .GetComponentsInChildren<Transform> ();
+
+		foreach (Transform childTransform in transformArray) {
+			if (childTransform.name.Contains ("palm") && grabbingHand.GetPinchState ().Equals (GrabbingHand.PinchState.kPinched)) {
+				Debug.Log ("aaaa");
+				parentObject.transform.rotation.SetLookRotation (new Vector3 (childTransform.transform.position.x,childTransform.transform.position.y,childTransform.transform.position.z));
+			}
+		}
 	}
 
 	void ChangeColor() {
-		GameObject leftRigidHand = GameObject.Find ("LRigidHand(Clone)");
+		GameObject rightRigidHand = GameObject.Find ("RRigidHand(Clone)");
 		Transform[] transformArray;
 
-		if (leftRigidHand != null) {
-			transformArray = leftRigidHand.GetComponentsInChildren<Transform> ();
+		if (rightRigidHand != null) {
+			transformArray = rightRigidHand .GetComponentsInChildren<Transform> ();
 			foreach (Transform childTransform in transformArray) {
 
 				if (childTransform.name.Contains ("palm")) {
