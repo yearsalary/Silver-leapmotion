@@ -20,6 +20,7 @@ public class RecordSaveFile : MonoBehaviour {
         //Debug.Log("11");
         Debug.Log(Microphone.devices.Length);
         ad.clip = Microphone.Start(null, true, 10, 44100);
+        //ad.clip.LoadAudioData
     }
 
     public void record_end()

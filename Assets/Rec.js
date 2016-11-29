@@ -1,10 +1,11 @@
 #pragma strict
+
 import System.IO; // for FileStream
 import System; // for BitConverter and Byte Type
 private var bufferSize :int;
 private var numBuffers : int;
 private var outputRate : int = 44100;
-private var fileName : String = "recTest.wav";
+private var fileName : String =  "recTest2.wav";
 private var headerSize : int = 44; //default for uncompressed wav
 private var recOutput : boolean;
 private var fileStream : FileStream;
@@ -21,10 +22,11 @@ function Update()
 {
     if(Input.GetKeyDown("r"))
     {
+
         print("rec");
         if(recOutput == false)
         {
-            StartWriting(fileName);
+            StartWriting( Application.dataPath + "/" + fileName);
             recOutput = true;
         }
         else
