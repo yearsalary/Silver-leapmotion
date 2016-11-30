@@ -2,31 +2,29 @@
 using System.Collections;
 
 public class RecordSaveFile : MonoBehaviour {
-	AudioClip clip;
-    AudioSource ad;
-    // Use this for initialization
+    //AudioSource audioSource;
+    AudioClip audioClip;
+    
     void Start () {
-        ad = gameObject.GetComponent<AudioSource>();
-        ad.Play();
-	}
+        //audioSource = new AudioSource();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
-	
+        
 	}
-
-    public void record_start()
-    {
-        //Debug.Log("11");
-        Debug.Log(Microphone.devices.Length);
-        ad.clip = Microphone.Start(null, true, 10, 44100);
-        //ad.clip.LoadAudioData
-    }
 
     public void record_end()
     {
-        Debug.Log(Application.dataPath);
-        Microphone.End(null);
-        EncodeMP3.convert(ad.clip, Application.dataPath + "/convertedMp3.mp3", 128);
+        //audioSource = new AudioSource();
+        //audioSource.clip = Resources.Load<AudioClip>(Application.persistentDataPath + "/recTest.wav");
+        audioClip = new AudioClip();
+        //audioClip = Resources.Load<AudioClip>(Application.persistentDataPath + "/recTest.wav");
+
+        WWW www = new WWW(Application.persistentDataPath + "/recTest.wav");
+        audioClip = www.GetAudioClip(false);
+        Debug.Log((audioClip == null) ? "Sound is null" : "Sound is not null");
+        EncodeMP3.convert(audioClip, Application.persistentDataPath + "/convertedMp3.mp3", 128);
     }
 }

@@ -5,7 +5,7 @@ import System; // for BitConverter and Byte Type
 private var bufferSize :int;
 private var numBuffers : int;
 private var outputRate : int = 44100;
-private var fileName : String =  "recTest2.wav";
+private var fileName : String =  "recTest.wav";
 private var headerSize : int = 44; //default for uncompressed wav
 private var recOutput : boolean;
 private var fileStream : FileStream;
@@ -26,7 +26,8 @@ function Update()
         print("rec");
         if(recOutput == false)
         {
-            StartWriting( Application.dataPath + "/" + fileName);
+            StartWriting( Application.persistentDataPath + "/" + fileName);
+            //StartWriting( "sound/" + fileName);
             recOutput = true;
         }
         else
