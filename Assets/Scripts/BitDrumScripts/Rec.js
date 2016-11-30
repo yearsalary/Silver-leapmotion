@@ -27,7 +27,7 @@ function Update()
         if(recOutput == false)
         {
             StartWriting( Application.persistentDataPath + "/" + fileName);
-            //StartWriting( "sound/" + fileName);
+            //rStartWriting( "sound/" + fileName);
             recOutput = true;
         }
         else
