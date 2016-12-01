@@ -51,6 +51,8 @@ public class CubeCraftGameManager : MonoBehaviour {
 		GameObject leftRigidHand = GameObject.Find ("LRigidHand(Clone)");
 		GrabbingHand grabbingHand;
 		Transform[] transformArray;
+		Vector3 handScreenPos;
+		Vector3 parentSceenPos = Camera.main.WorldToScreenPoint (parentObject.transform.position);
 
 		if (leftRigidHand == null)
 			return;
@@ -60,9 +62,26 @@ public class CubeCraftGameManager : MonoBehaviour {
 		transformArray = leftRigidHand .GetComponentsInChildren<Transform> ();
 
 		foreach (Transform childTransform in transformArray) {
-			if (childTransform.name.Contains ("palm") && grabbingHand.GetPinchState ().Equals (GrabbingHand.PinchState.kPinched)) {
+			if (childTransform.name.Contains ("palm")) {
 				Debug.Log ("aaaa");
-				parentObject.transform.rotation.SetLookRotation (new Vector3 (childTransform.transform.position.x,childTransform.transform.position.y,childTransform.transform.position.z));
+				handScreenPos = Camera.main.WorldToScreenPoint (childTransform.position);
+				Debug.Log ("x " + (parentSceenPos.x-handScreenPos.x) + " y " + (parentSceenPos.y-handScreenPos.y));
+				float deltaPosX = (parentSceenPos.x - handScreenPos.x);
+				float deltaPosY = (parentSceenPos.y - handScreenPos.y);
+				float speed = 1f;
+
+				if (Mathf.Abs (deltaPosY) < 100) {
+					if (deltaPosX > 0f)
+						parentObject.transform.Rotate (Vector3.up, speed, Space.World);
+					else
+						parentObject.transform.Rotate (Vector3.down, speed, Space.World);
+				} else {
+					if (deltaPosY > 0f)
+						parentObject.transform.Rotate (Vector3.left, speed, Space.World);
+					else
+						parentObject.transform.Rotate (Vector3.right, speed, Space.World);
+				}
+				//parentObject.transform.rotation = Quaternion.LookRotation(new Vector3 (childTransform.transform.position.x,childTransform.transform.position.y,childTransform.transform.position.z));
 			}
 		}
 	}
