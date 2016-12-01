@@ -227,7 +227,8 @@ public class OBJExportManager : MonoBehaviour {
 		}
 
 
-		progressText.text = "완료됨.";
+		progressText.text = "파일생성 완료됨...서버 전송중";
+		StartCoroutine(UploadOBJFile ("http://localhost:8888/spring_test/fileUpload", "file:///"+exportPath));
 		//export complete, close progress dialog
 		//EditorUtility.ClearProgressBar();
 	}
@@ -328,5 +329,25 @@ public class OBJExportManager : MonoBehaviour {
 		}
 
 	}
+
+	IEnumerator UploadOBJFile(string uploadURL, string localFilePath) {
+		WWW objFile = new WWW (localFilePath);
+		yield return objFile;
+		Debug.Log ("www" +objFile.size);
+		WWWForm postForm = new WWWForm ();
+		postForm.AddBinaryData("file",objFile.bytes,"first.obj");
+
+		WWW upload = new WWW (uploadURL, postForm);
+		yield return upload;
+
+		if (upload.error == null) {
+			Debug.Log (upload.text);
+		} else {
+			Debug.Log (upload.error);
+		}
+
+		progressText.text = "완료됨";
+	}
+		
 
 }
