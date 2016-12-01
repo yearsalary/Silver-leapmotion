@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CubeCraftGameManager : MonoBehaviour {
 
@@ -14,16 +15,21 @@ public class CubeCraftGameManager : MonoBehaviour {
 	bool isChangingColor= false;
 	int currentCubeColorIndx = 0;
 	int cubeId = 0;
+	private bool isPlaying = false;
 
+
+	public Canvas craftCanvas;
+	public Canvas dialogueCanvas;
 
 	void Start() {
-		cubeList = new List<GameObject> ();
-		colorImage [0].color = color_mtls [color_mtls.Length - 1].color;
-		colorImage [1].color = color_mtls [currentCubeColorIndx].color;
-		colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+		InitGame ();
+
+
 	}
 
 	void Update() {
+		if (!isPlaying)
+			return;
 		CreateCube ();
 		ChangeColor ();
 		RotateCube ();
@@ -158,7 +164,36 @@ public class CubeCraftGameManager : MonoBehaviour {
 				}
 			}
 		}
+	}
 
+	public void InitGame() {
+		this.dialogueCanvas.enabled = true;
+		this.craftCanvas.enabled = false;
+		this.isPlaying = false;
 
+		//TODO: setColor..
+		currentCubeColorIndx=0;
+		colorImage [0].color = color_mtls [color_mtls.Length - 1].color;
+		colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+		colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+
+		if (cubeList != null) {
+			foreach (GameObject cube in cubeList) {
+				Destroy (cube);
+			}
+			cubeList. Clear();
+		}
+			
+	}
+
+	public void StartGame() {
+		this.dialogueCanvas.enabled = false;
+		this.craftCanvas.enabled = true;
+		this.isPlaying = true;
+		cubeList = new List<GameObject> ();
+	}
+
+	public void EndGame() {
+		SceneManager.LoadScene("MainMenuScene2");
 	}
 }
