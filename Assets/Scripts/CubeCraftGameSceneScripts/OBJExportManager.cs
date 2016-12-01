@@ -25,6 +25,8 @@ public class OBJExportManager : MonoBehaviour {
 	public float progress;
 	public Text progressText;
 
+
+
 	public GameObject[] GetChilds(GameObject parent) {
 		Transform[] childTransforms = parent.GetComponentsInChildren<Transform>();
 		List<GameObject> childObjList = new List<GameObject> ();

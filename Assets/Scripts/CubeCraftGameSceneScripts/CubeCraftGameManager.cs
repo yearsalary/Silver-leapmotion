@@ -7,16 +7,21 @@ public class CubeCraftGameManager : MonoBehaviour {
 
 	public GameObject cube;
 	public GameObject parentObject;
-	public Text progressText;
 	public Material[] color_mtls;
 	public float createCubeDistance;
-
+	public Image[] colorImage;
 
 	bool isChangingColor= false;
 	int currentCubeColorIndx = 0;
 	int cubeId = 0;
 
-		
+
+	void Start() {
+		colorImage [0].color = color_mtls [color_mtls.Length - 1].color;
+		colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+		colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+	}
+
 	void Update() {
 		CreateCube ();
 		ChangeColor ();
@@ -101,6 +106,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 							currentCubeColorIndx++;
 						else
 							currentCubeColorIndx = 0;
+						SetColorImages ();
 						isChangingColor = true;
 					} else if (isChangingColor && 0.1 >= childTransform.rotation.z) {
 						isChangingColor = false;
@@ -111,8 +117,20 @@ public class CubeCraftGameManager : MonoBehaviour {
 		}
 	}
 
-	public void Display(float progress) {
-		progressText.text = "Exporting objects... (" + Mathf.Round (progress* 100) + "%)";
+	private void SetColorImages() {
+		if (currentCubeColorIndx == 0) {
+			colorImage [0].color = color_mtls [color_mtls.Length - 1].color;
+			colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+			colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+		} else if (currentCubeColorIndx == color_mtls.Length - 1) {
+			colorImage [0].color = color_mtls [currentCubeColorIndx - 1].color;
+			colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+			colorImage [2].color = color_mtls [0].color;
+		} else {
+			colorImage [0].color = color_mtls [currentCubeColorIndx - 1].color;
+			colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+			colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+		}
 	}
 
 }
