@@ -18,6 +18,7 @@ public class OBJExportManager : MonoBehaviour {
 	public bool autoMarkTexReadable = false;
 	public bool objNameAddIdNum = false;
 
+	public string uploadURL = "http://localhost:8888/spring_test/fileUpload";
 	private string lastExportFolder;
 	private string versionString = "v2.0";
 	public GameObject targetParent;
@@ -228,7 +229,7 @@ public class OBJExportManager : MonoBehaviour {
 
 
 		progressText.text = "파일생성 완료됨...서버 전송중";
-		StartCoroutine(UploadOBJFile ("http://localhost:8888/spring_test/fileUpload", "file:///"+exportPath));
+		StartCoroutine(Upload_OBJ_and_MLTFile (uploadURL, "file:///"+exportPath, "file:///"+exportFileInfo.Directory.FullName + "\\" + baseFileName + ".mtl"));
 		//export complete, close progress dialog
 		//EditorUtility.ClearProgressBar();
 	}
@@ -330,13 +331,16 @@ public class OBJExportManager : MonoBehaviour {
 
 	}
 
-	IEnumerator UploadOBJFile(string uploadURL, string localFilePath) {
-		WWW objFile = new WWW (localFilePath);
+	IEnumerator Upload_OBJ_and_MLTFile(string uploadURL, string localOBJFilePath, string localMTLFilePath) {
+		//TODO: OBJfile upload.
+		WWW objFile = new WWW (localOBJFilePath);
 		yield return objFile;
-		Debug.Log ("www" +objFile.size);
-		WWWForm postForm = new WWWForm ();
-		postForm.AddBinaryData("file",objFile.bytes,"first.obj");
+		WWW mtlFile = new WWW (localMTLFilePath);
+		yield return mtlFile;
 
+		WWWForm postForm = new WWWForm ();
+		postForm.AddBinaryData("OBJfile",objFile.bytes,"test.obj");
+		postForm.AddBinaryData("MLTfile",mtlFile.bytes,"test.mtl");
 		WWW upload = new WWW (uploadURL, postForm);
 		yield return upload;
 
