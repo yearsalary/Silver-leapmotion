@@ -38,7 +38,6 @@ function OnRecordStartBtn() {
 function OnRecordStopBtn() {
 	recOutput = false;
 	WriteHeader();
-   	recStartBtn.interactable = true;
 	recStopBtn.interactable= false;
 	recState = "recEnd";
 }
