@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class WAVFileUploader : MonoBehaviour {
 	public GameObject cam;
@@ -8,9 +9,12 @@ public class WAVFileUploader : MonoBehaviour {
 	public string uploadURL = "http://localhost:8888/spring_test/wavfileUpload";
 	public string wavFilePath = "";
 	public string fileName = "";
+
 	public Button recStartBtn;
 	public Button recStopBtn;
-	public Canvas recUI;
+	public Button gameStopBtn;
+	public Canvas recCanvas;
+	public Canvas dialougeCanvas;
 	public Text recTimeText;
 	public Text recUploadText;
 	private float recTime;
@@ -22,8 +26,8 @@ public class WAVFileUploader : MonoBehaviour {
 	void Start() {
 		rc = cam.GetComponent<WAVRecorder> ();
 		wavFilePath = Application.persistentDataPath + "\\newRec.wav";
-
 		recTime = 0;
+		InitGame ();
 	}
 	// Update is called once per frame
 	void Update () {
@@ -34,6 +38,7 @@ public class WAVFileUploader : MonoBehaviour {
 		if (rc.recState == "recStart") {
 			CheckRecTime ();
 			recUploadText.text = "녹음중...";
+			gameStopBtn.interactable = false;
 		}
 
 		if (rc.recState == "recEnd") {
@@ -58,6 +63,7 @@ public class WAVFileUploader : MonoBehaviour {
 
 		recStartBtn.interactable = true;
 		recStopBtn.interactable = false;
+		gameStopBtn.interactable = true;
 
 		if (upload.error == null) {
 			Debug.Log (upload.text);
@@ -74,5 +80,19 @@ public class WAVFileUploader : MonoBehaviour {
 		sec = ((int)recTime % 60);
 		milSec = (int)((recTime * 100) % 100);
 		recTimeText.text = string.Format ("{0,2:D2}:{1,2:D2}:{2,2:D2}", min, sec, milSec);
+	}
+
+	public void StartGame() {
+		this.dialougeCanvas.enabled = false;
+		this.recCanvas.enabled = true;
+	}
+
+	public void InitGame() {
+		this.dialougeCanvas.enabled = true;
+		this.recCanvas.enabled = false;
+	}
+
+	public void EndGame() {
+		SceneManager.LoadScene ("MainMenuScene2");
 	}
 }

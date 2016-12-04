@@ -17,14 +17,14 @@ public class OBJExportManager : MonoBehaviour {
 	public bool splitObjects = true;
 	public bool autoMarkTexReadable = false;
 	public bool objNameAddIdNum = false;
-
 	public string uploadURL = "http://localhost:8888/spring_test/fileUpload";
 	private string lastExportFolder;
 	private string versionString = "v2.0";
 	public GameObject targetParent;
+
 	public float progress;
 	public Text progressText;
-
+	public Button gameStopBtn;
 
 
 	public GameObject[] GetChilds(GameObject parent) {
@@ -37,6 +37,7 @@ public class OBJExportManager : MonoBehaviour {
 	}
 
 	public void OnExport () {
+		gameStopBtn.interactable = false;
 		progressText.text = "추출중...";
 		StartCoroutine (Export ());
 	}
@@ -353,6 +354,7 @@ public class OBJExportManager : MonoBehaviour {
 		}
 
 		progressText.text = "완료됨";
+		gameStopBtn.interactable = true;
 	}
 		
 
