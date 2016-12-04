@@ -15,7 +15,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	private string ballOwner = "";
 	public string name;
-
+	private bool isBallOwnerChanging = false;
 
 	// Use this for initialization
 	void Start () {
@@ -55,11 +55,14 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		
 		SendBarMoveMSg();
 
-		if (Vector3.Distance (playerBar.transform.position, ball.transform.position) < 2f && !isBallOwner ()) {
-			SendBallOwnerChangeMsg ();
-		} else if (ballOwner.Equals (name)) {
+		if (!isBallOwner ()) {
+			if(Vector3.Distance (playerBar.transform.position, ball.transform.position) < 2f)
+				SendBallOwnerChangeMsg ();
+		} else if(!isBallOwnerChanging){
 			SendBallMoveMSg ();
 		}
+
+
 			
 	}
 	
@@ -137,6 +140,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 	}
 		
 	private void OnBallOwnerChange(SocketIOEvent evt) {
+		isBallOwnerChanging = false;
 		Debug.Log ("ballOWner: "+evt.data.GetField ("name").str);
 		ballOwner = evt.data.GetField ("name").str;
 	}
@@ -182,7 +186,8 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	public void SendBallOwnerChangeMsg(){
 		Dictionary<string, string> data = new Dictionary<string, string> ();
-		//this.ballOwner = name;// BallOwner 자신으로 수정..
+		this.ballOwner = name;// BallOwner 자신으로 수정..
+		isBallOwnerChanging = true;
 
 		data["name"] = name;
 		data ["title"] = tableHockeyGameManager.getCurrentJoinedRoom ().GetField ("title").str;
