@@ -32,6 +32,13 @@ public class OBJExportManager : MonoBehaviour {
 	public InputField titleInputField;
 	public Button checkBtn;
 
+	private string contentsName;
+	private string startTime;
+	private string endTime;
+
+	void Start() {
+		contentsName = "큐브크래프트";
+	}
 
 	public GameObject[] GetChilds(GameObject parent) {
 		Transform[] childTransforms = parent.GetComponentsInChildren<Transform>();
@@ -40,6 +47,11 @@ public class OBJExportManager : MonoBehaviour {
 			childObjList.Add (child.gameObject);
 
 		return childObjList.ToArray();
+	}
+
+	public void OnStartBtn(){
+		startTime = DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss");
+
 	}
 
 	public void OnSaveBtn() {
@@ -55,8 +67,11 @@ public class OBJExportManager : MonoBehaviour {
 	}
 		
 	public void OnExport () {
+		DateTime endDateTime = DateTime.Now;
+		endTime = endDateTime.ToString ("yyyy-MM-dd HH:mm:ss");
+		titleCanvas.enabled = false;
 		gameStopBtn.interactable = false;
-		originFileName = titleInputField.text;
+		originFileName = GameStatusModel.trainee.getId() + "_" + titleInputField.text + "_"+endDateTime.ToString ("yyyyMMddHHmmss");
 		progressText.text = "추출중...";
 		StartCoroutine (Export ());
 	}
@@ -362,7 +377,7 @@ public class OBJExportManager : MonoBehaviour {
 
 		WWWForm postForm = new WWWForm ();
 
-		PlayRecordData palyData = new PlayRecordData ("aaa","bbb","큐브크래프트","0","0","1","1");
+		PlayRecordData palyData = new PlayRecordData (GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, contentsName, "0", "0", startTime, endTime);
 		postForm.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(palyData, true))));
 		postForm.AddBinaryData("obj",objFile.bytes, originFileName + ".obj");
 		postForm.AddBinaryData("mtl",mtlFile.bytes, originFileName + ".mtl");
@@ -374,9 +389,7 @@ public class OBJExportManager : MonoBehaviour {
 		} else {
 			Debug.Log (upload.error);
 		}
-
-
-
+			
 		progressText.text = "완료됨";
 		gameStopBtn.interactable = true;
 	}

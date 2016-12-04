@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class CubeCraftGameManager : MonoBehaviour {
 
@@ -17,15 +18,14 @@ public class CubeCraftGameManager : MonoBehaviour {
 	int cubeId = 0;
 	private bool isPlaying = false;
 
-
 	public Canvas craftCanvas;
 	public Canvas dialogueCanvas;
 	public Canvas titleCanvas;
 
+
+
 	void Start() {
 		InitGame ();
-
-
 	}
 
 	void Update() {
@@ -185,7 +185,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 			}
 			cubeList. Clear();
 		}
-			
+
 	}
 
 	public void StartGame() {
