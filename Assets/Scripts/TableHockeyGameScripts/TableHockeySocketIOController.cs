@@ -55,11 +55,13 @@ public class TableHockeySocketIOController: MonoBehaviour {
 		
 		SendBarMoveMSg();
 
+		if (Vector3.Distance (playerBar.transform.position, ball.transform.position) < 2f && !isBallOwner())
+			SendBallOwnerChangeMsg ();
+
 		if (ballOwner.Equals (name))
 			SendBallMoveMSg ();
 
-		if (Vector3.Distance (playerBar.transform.position, ball.transform.position) < 2f && !isBallOwner())
-			SendBallOwnerChangeMsg ();
+
 
 	}
 	
@@ -182,7 +184,7 @@ public class TableHockeySocketIOController: MonoBehaviour {
 
 	public void SendBallOwnerChangeMsg(){
 		Dictionary<string, string> data = new Dictionary<string, string> ();
-		this.ballOwner = name;// BallOwner 자신으로 수정..
+		//this.ballOwner = name;// BallOwner 자신으로 수정..
 
 		data["name"] = name;
 		data ["title"] = tableHockeyGameManager.getCurrentJoinedRoom ().GetField ("title").str;
