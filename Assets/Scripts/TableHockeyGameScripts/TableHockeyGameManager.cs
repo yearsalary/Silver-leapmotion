@@ -39,6 +39,8 @@ public class TableHockeyGameManager : MonoBehaviour {
 		ready_dialogueCanvas.enabled = false;
 		end_dialogueCanvas.enabled = false;
 		gamePlayUI.enabled = false;
+		NetworkCtrl.GetComponent<TableHockeySocketIOController> ().name = GameStatusModel.trainee.getId () +"p";
+
 
 		findChildrenTxt(wait_dialogueCanvas, "Message").text = "서버 접속시도 중...";
 

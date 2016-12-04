@@ -15,7 +15,6 @@ public var fileName : String;
 public var recState: String = "idle";
 public var recStartBtn : Button;
 public var recStopBtn : Button;
-public var titleInputField : InputField;
 
 function Awake()
 {

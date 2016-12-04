@@ -9,7 +9,7 @@ using System.Text;
 public class WAVFileUploader : MonoBehaviour {
 	public GameObject cam;
 	WAVRecorder rc;
-	public string uploadURL = "http://117.17.158.66:8080/vrain/client/uploadWav";
+	public string uploadURL;
 	public string wavFilePath = "";
 
 	public Button recStartBtn;
@@ -29,6 +29,7 @@ public class WAVFileUploader : MonoBehaviour {
 	private string startTime;
 	private string endTime;
 	public string originFileName;
+	public string title;
 
 	int min = 0;
 	int sec = 0;
@@ -68,11 +69,14 @@ public class WAVFileUploader : MonoBehaviour {
 
 		WWW wavFile = new WWW ("file:///"+wavFilePath);
 		yield return wavFile;
+		Debug.Log (wavFile.bytes.Length);
 		WWWForm postForm = new WWWForm ();
 
 		PlayRecordData playData = new PlayRecordData (GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, contentsName,"0", "0", startTime, endTime);
-		postForm.AddField ("result",  Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(playData, true))));
-		postForm.AddBinaryData("wav",wavFile.bytes, originFileName + ".wav");
+		postForm.AddField ("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(playData, true))));
+		postForm.AddField ("title", Convert.ToBase64String (Encoding.UTF8.GetBytes (title)));
+		postForm.AddBinaryData("wav",wavFile.bytes, originFileName+".wav" );
+
 		WWW upload = new WWW (uploadURL, postForm);
 		yield return upload;
 
@@ -132,8 +136,9 @@ public class WAVFileUploader : MonoBehaviour {
 
 		DateTime startDateTime = DateTime.Now;
 		startTime = startDateTime.ToString ("yyyy-MM-dd HH:mm:ss");
-		originFileName = "1" + "_" + titleInputField.text +"_"+ startDateTime.ToString ("yyyyMMddHHmmss"); 
-		rc.fileName = originFileName += ".wav";
+		originFileName = GameStatusModel.trainee.getId() +"_"+ startDateTime.ToString ("yyyyMMddHHmmss"); 
+		title = titleInputField.text;
+		rc.fileName = originFileName + ".wav";
 		rc.OnRecordStartBtn ();
 	}
 

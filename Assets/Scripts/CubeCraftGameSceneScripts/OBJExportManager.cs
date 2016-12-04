@@ -19,7 +19,7 @@ public class OBJExportManager : MonoBehaviour {
 	public bool splitObjects = true;
 	public bool autoMarkTexReadable = false;
 	public bool objNameAddIdNum = false;
-	public string uploadURL = "http://117.17.158.66:8080/vrain/client/uploadObj";
+	public string uploadURL;
 	private string lastExportFolder;
 	private string versionString = "v2.0";
 	public GameObject targetParent;
@@ -35,6 +35,7 @@ public class OBJExportManager : MonoBehaviour {
 	private string contentsName;
 	private string startTime;
 	private string endTime;
+	private string title;
 
 	void Start() {
 		contentsName = "큐브크래프트";
@@ -51,10 +52,10 @@ public class OBJExportManager : MonoBehaviour {
 
 	public void OnStartBtn(){
 		startTime = DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss");
-
 	}
 
 	public void OnSaveBtn() {
+		titleInputField.text = "";
 		titleCanvas.enabled = true;
 		checkBtn.interactable = false;
 	}
@@ -68,13 +69,13 @@ public class OBJExportManager : MonoBehaviour {
 		
 	public void OnExport () {
 		titleCanvas.enabled = false;
-		titleInputField.text = "";
 		gameStopBtn.interactable = false;
 
 		DateTime endDateTime = DateTime.Now;
 		endTime = endDateTime.ToString ("yyyy-MM-dd HH:mm:ss");
 
-		originFileName = GameStatusModel.trainee.getId() + "_" + titleInputField.text + "_"+endDateTime.ToString ("yyyyMMddHHmmss");
+		originFileName = GameStatusModel.trainee.getId() +"_"+endDateTime.ToString ("yyyyMMddHHmmss");
+		title = titleInputField.text;
 		progressText.text = "추출중...";
 		StartCoroutine (Export ());
 	}
@@ -382,8 +383,9 @@ public class OBJExportManager : MonoBehaviour {
 
 		PlayRecordData playData = new PlayRecordData (GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, contentsName, "0", "0", startTime, endTime);
 		postForm.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(playData, true))));
-		postForm.AddBinaryData("obj",objFile.bytes, originFileName + ".obj");
-		postForm.AddBinaryData("mtl",mtlFile.bytes, originFileName + ".mtl");
+		postForm.AddField ("title", Convert.ToBase64String (Encoding.UTF8.GetBytes (title)));
+		postForm.AddBinaryData("obj",objFile.bytes, originFileName+".obj");
+		postForm.AddBinaryData("mtl",mtlFile.bytes, originFileName+".mtl");
 		WWW upload = new WWW (uploadURL, postForm);
 		yield return upload;
 
