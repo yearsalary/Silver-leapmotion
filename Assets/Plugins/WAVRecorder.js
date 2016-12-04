@@ -7,14 +7,15 @@ import UnityEngine.UI;
 private var bufferSize :int;
 private var numBuffers : int;
 private var outputRate : int = 44100;
-private var fileName : String =  "newRec.wav";
 private var headerSize : int = 44; //default for uncompressed wav
 private var fileStream : FileStream;
 private var recOutput : boolean;
 
+public var fileName : String;
 public var recState: String = "idle";
 public var recStartBtn : Button;
 public var recStopBtn : Button;
+public var titleInputField : InputField;
 
 function Awake()
 {

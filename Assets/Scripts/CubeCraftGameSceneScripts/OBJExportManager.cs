@@ -23,7 +23,7 @@ public class OBJExportManager : MonoBehaviour {
 	private string lastExportFolder;
 	private string versionString = "v2.0";
 	public GameObject targetParent;
-	public String originFileName;
+	public string originFileName;
 
 	public float progress;
 	public Text progressText;
@@ -67,10 +67,13 @@ public class OBJExportManager : MonoBehaviour {
 	}
 		
 	public void OnExport () {
+		titleCanvas.enabled = false;
+		titleInputField.text = "";
+		gameStopBtn.interactable = false;
+
 		DateTime endDateTime = DateTime.Now;
 		endTime = endDateTime.ToString ("yyyy-MM-dd HH:mm:ss");
-		titleCanvas.enabled = false;
-		gameStopBtn.interactable = false;
+
 		originFileName = GameStatusModel.trainee.getId() + "_" + titleInputField.text + "_"+endDateTime.ToString ("yyyyMMddHHmmss");
 		progressText.text = "추출중...";
 		StartCoroutine (Export ());
@@ -377,8 +380,8 @@ public class OBJExportManager : MonoBehaviour {
 
 		WWWForm postForm = new WWWForm ();
 
-		PlayRecordData palyData = new PlayRecordData (GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, contentsName, "0", "0", startTime, endTime);
-		postForm.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(palyData, true))));
+		PlayRecordData playData = new PlayRecordData (GameStatusModel.trainee.getId(), GameStatusModel.assistant.id, contentsName, "0", "0", startTime, endTime);
+		postForm.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(playData, true))));
 		postForm.AddBinaryData("obj",objFile.bytes, originFileName + ".obj");
 		postForm.AddBinaryData("mtl",mtlFile.bytes, originFileName + ".mtl");
 		WWW upload = new WWW (uploadURL, postForm);
