@@ -2,25 +2,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System;
 
 public class CubeCraftGameManager : MonoBehaviour {
 
 	public GameObject cube;
 	public GameObject parentObject;
-	public Text progressText;
 	public Material[] color_mtls;
 	public float createCubeDistance;
-
-
+	public Image[] colorImage;
+	private List<GameObject> cubeList;
 	bool isChangingColor= false;
 	int currentCubeColorIndx = 0;
 	int cubeId = 0;
+	private bool isPlaying = false;
 
-		
+	public Canvas craftCanvas;
+	public Canvas dialogueCanvas;
+	public Canvas titleCanvas;
+
+
+
+	void Start() {
+		InitGame ();
+	}
+
 	void Update() {
+		if (!isPlaying)
+			return;
 		CreateCube ();
 		ChangeColor ();
 		RotateCube ();
+		RemoveCube ();
 	}
 
 	void CreateCube() {
@@ -42,6 +56,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 
 				childObj.name += cubeId;
 				cubeId++;
+				cubeList.Add (childObj);
 			}
 		}
 
@@ -62,7 +77,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 		transformArray = leftRigidHand .GetComponentsInChildren<Transform> ();
 
 		foreach (Transform childTransform in transformArray) {
-			if (childTransform.name.Contains ("palm")) {
+			if (childTransform.name.Contains ("palm") && !grabbingHand.GetPinchState ().Equals (GrabbingHand.PinchState.kPinched)) {
 				Debug.Log ("aaaa");
 				handScreenPos = Camera.main.WorldToScreenPoint (childTransform.position);
 				Debug.Log ("x " + (parentSceenPos.x-handScreenPos.x) + " y " + (parentSceenPos.y-handScreenPos.y));
@@ -101,6 +116,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 							currentCubeColorIndx++;
 						else
 							currentCubeColorIndx = 0;
+						SetColorImages ();
 						isChangingColor = true;
 					} else if (isChangingColor && 0.1 >= childTransform.rotation.z) {
 						isChangingColor = false;
@@ -111,8 +127,75 @@ public class CubeCraftGameManager : MonoBehaviour {
 		}
 	}
 
-	public void Display(float progress) {
-		progressText.text = "Exporting objects... (" + Mathf.Round (progress* 100) + "%)";
+	private void SetColorImages() {
+		if (currentCubeColorIndx == 0) {
+			colorImage [0].color = color_mtls [color_mtls.Length - 1].color;
+			colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+			colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+		} else if (currentCubeColorIndx == color_mtls.Length - 1) {
+			colorImage [0].color = color_mtls [currentCubeColorIndx - 1].color;
+			colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+			colorImage [2].color = color_mtls [0].color;
+		} else {
+			colorImage [0].color = color_mtls [currentCubeColorIndx - 1].color;
+			colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+			colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+		}
 	}
 
+	private void RemoveCube() {
+		GameObject leftRigidHand = GameObject.Find ("LRigidHand(Clone)");
+		GrabbingHand grabbingHand;
+		Transform[] transformArray;
+		GameObject childObj;
+
+		if (leftRigidHand == null)
+			return;
+
+		grabbingHand = leftRigidHand .GetComponentInChildren<GrabbingHand> ();
+		transformArray = leftRigidHand .GetComponentsInChildren<Transform> ();
+		foreach (Transform childTransform in transformArray) {
+			if (childTransform.name.Contains ("palm") && grabbingHand.GetPinchState ().Equals (GrabbingHand.PinchState.kPinched)) {
+				foreach (GameObject cube in cubeList) {
+					if (childTransform.GetComponent<BoxCollider> ().bounds.Contains (cube.transform.position)) {
+						cubeList.Remove (cube);
+						Destroy (cube);
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	public void InitGame() {
+		this.dialogueCanvas.enabled = true;
+		this.craftCanvas.enabled = false;
+		this.titleCanvas.enabled = false;
+		this.isPlaying = false;
+
+		//TODO: setColor..
+		currentCubeColorIndx=0;
+		colorImage [0].color = color_mtls [color_mtls.Length - 1].color;
+		colorImage [1].color = color_mtls [currentCubeColorIndx].color;
+		colorImage [2].color = color_mtls [currentCubeColorIndx + 1].color;
+
+		if (cubeList != null) {
+			foreach (GameObject cube in cubeList) {
+				Destroy (cube);
+			}
+			cubeList. Clear();
+		}
+
+	}
+
+	public void StartGame() {
+		this.dialogueCanvas.enabled = false;
+		this.craftCanvas.enabled = true;
+		this.isPlaying = true;
+		cubeList = new List<GameObject> ();
+	}
+
+	public void EndGame() {
+		SceneManager.LoadScene("MainMenuScene2");
+	}
 }

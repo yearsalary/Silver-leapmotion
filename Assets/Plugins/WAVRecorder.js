@@ -2,13 +2,20 @@
 
 import System.IO; // for FileStream
 import System; // for BitConverter and Byte Type
+import UnityEngine.UI;
+
 private var bufferSize :int;
 private var numBuffers : int;
 private var outputRate : int = 44100;
-private var fileName : String =  "recTest.wav";
 private var headerSize : int = 44; //default for uncompressed wav
-private var recOutput : boolean;
 private var fileStream : FileStream;
+private var recOutput : boolean;
+
+public var fileName : String;
+public var recState: String = "idle";
+public var recStartBtn : Button;
+public var recStopBtn : Button;
+public var titleInputField : InputField;
 
 function Awake()
 {
@@ -17,27 +24,25 @@ function Awake()
 function Start()
 {
     AudioSettings.GetDSPBufferSize(bufferSize,numBuffers);
+	recStartBtn.interactable = true;
+	recStopBtn.interactable = false;
 }
-function Update()
-{
-    if(Input.GetKeyDown("r"))
-    {
 
-        print("rec");
-        if(recOutput == false)
-        {
-            StartWriting( Application.persistentDataPath + "/" + fileName);
-            //rStartWriting( "sound/" + fileName);
-            recOutput = true;
-        }
-        else
-        {
-            recOutput = false;
-            WriteHeader();
-            print("rec stop");
-        }
-    }
+function OnRecordStartBtn() {
+	StartWriting( Application.persistentDataPath + "/" + fileName);
+    recOutput = true;
+	recStartBtn.interactable = false;
+	recStopBtn.interactable = true;
+	recState = "recStart";        
 }
+
+function OnRecordStopBtn() {
+	recOutput = false;
+	WriteHeader();
+	recStopBtn.interactable= false;
+	recState = "recEnd";
+}
+
 function StartWriting(name : String)
     {
         fileStream = new FileStream(name, FileMode.Create);
