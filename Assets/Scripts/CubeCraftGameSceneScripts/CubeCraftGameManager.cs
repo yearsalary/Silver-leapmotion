@@ -20,6 +20,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 
 	public Canvas craftCanvas;
 	public Canvas dialogueCanvas;
+	public Canvas titleCanvas;
 
 	void Start() {
 		InitGame ();
@@ -169,6 +170,7 @@ public class CubeCraftGameManager : MonoBehaviour {
 	public void InitGame() {
 		this.dialogueCanvas.enabled = true;
 		this.craftCanvas.enabled = false;
+		this.titleCanvas.enabled = false;
 		this.isPlaying = false;
 
 		//TODO: setColor..

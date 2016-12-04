@@ -1,11 +1,13 @@
 ﻿
 using UnityEngine;
+using System;
 using System.Collections;
 using System.IO;
 using System.Text;
 using System.Collections.Generic; 
 using UnityEngine.UI;
 using System.Threading;
+using LitJson;
 
 public class OBJExportManager : MonoBehaviour {
 	public bool onlySelectedObjects = true;
@@ -17,14 +19,18 @@ public class OBJExportManager : MonoBehaviour {
 	public bool splitObjects = true;
 	public bool autoMarkTexReadable = false;
 	public bool objNameAddIdNum = false;
-	public string uploadURL = "http://localhost:8888/spring_test/fileUpload";
+	public string uploadURL = "http://117.17.158.66:8080/vrain/client/uploadObj";
 	private string lastExportFolder;
 	private string versionString = "v2.0";
 	public GameObject targetParent;
+	public String originFileName;
 
 	public float progress;
 	public Text progressText;
 	public Button gameStopBtn;
+	public Canvas titleCanvas;
+	public InputField titleInputField;
+	public Button checkBtn;
 
 
 	public GameObject[] GetChilds(GameObject parent) {
@@ -36,8 +42,21 @@ public class OBJExportManager : MonoBehaviour {
 		return childObjList.ToArray();
 	}
 
+	public void OnSaveBtn() {
+		titleCanvas.enabled = true;
+		checkBtn.interactable = false;
+	}
+
+	public void CheckTitleInput() {
+		if (titleInputField.text.Length > 0)
+			checkBtn.interactable = true;
+		else
+			checkBtn.interactable = false;
+	}
+		
 	public void OnExport () {
 		gameStopBtn.interactable = false;
+		originFileName = titleInputField.text;
 		progressText.text = "추출중...";
 		StartCoroutine (Export ());
 	}
@@ -45,7 +64,7 @@ public class OBJExportManager : MonoBehaviour {
 	public IEnumerator Export()
 	{
 		string sDirPath;
-		string fileName = "test.obj";
+		string fileName = originFileName + ".obj";
 		string filePath;
 		string exportPath;
 
@@ -342,8 +361,11 @@ public class OBJExportManager : MonoBehaviour {
 		yield return mtlFile;
 
 		WWWForm postForm = new WWWForm ();
-		postForm.AddBinaryData("OBJfile",objFile.bytes,"test.obj");
-		postForm.AddBinaryData("MLTfile",mtlFile.bytes,"test.mtl");
+
+		PlayRecordData palyData = new PlayRecordData ("aaa","bbb","큐브크래프트","0","0","1","1");
+		postForm.AddField("result", Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonUtility.ToJson(palyData, true))));
+		postForm.AddBinaryData("obj",objFile.bytes, originFileName + ".obj");
+		postForm.AddBinaryData("mtl",mtlFile.bytes, originFileName + ".mtl");
 		WWW upload = new WWW (uploadURL, postForm);
 		yield return upload;
 
@@ -352,6 +374,8 @@ public class OBJExportManager : MonoBehaviour {
 		} else {
 			Debug.Log (upload.error);
 		}
+
+
 
 		progressText.text = "완료됨";
 		gameStopBtn.interactable = true;
